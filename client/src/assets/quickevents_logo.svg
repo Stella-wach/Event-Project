@@ -1,0 +1,24 @@
+<svg viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Red gradient similar to Marvel -->
+    <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#dc143c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b0000;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- White text -->
+    <linearGradient id="whiteText" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f0f0f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Red background rectangle similar to Marvel -->
+  <rect x="0" y="0" width="200" height="50" fill="url(#redGradient)" rx="4" ry="4"/>
+  
+  <!-- QUICKEVENTS text in Marvel-style layout -->
+  <text x="12" y="32" font-family="Arial Black, sans-serif" font-size="20" font-weight="900" fill="url(#whiteText)" letter-spacing="0.5px">QUICKEVENTS</text>
+  
+  <!-- Small "STUDIOS" style text -->
+  <text x="15" y="44" font-family="Arial, sans-serif" font-size="8" font-weight="600" fill="url(#whiteText)" letter-spacing="3px" opacity="0.9">ENTERTAINMENT</text>
+</svg>
