@@ -16,20 +16,21 @@ export const assets = {
 
 export const dummyEventMedia = [
     {
-        image: "https://img.youtube.com/vi/WpW36ldAqnM/maxresdefault.jpg",
-        videoUrl: 'https://www.youtube.com/watch?v=WpW36ldAqnM'
+        image: "https://i.pinimg.com/736x/75/43/ae/7543aeb5f45bd95c10bd458636597a23.jpg",
+        videoUrl:"https://www.youtube.com/embed/anLdzZI4AUU?si=ul6y6RuuHTWgkFOX" 
     },
     {
-        image: "https://img.youtube.com/vi/-sAOWhvheK8/maxresdefault.jpg",
-        videoUrl: 'https://www.youtube.com/watch?v=-sAOWhvheK8'
+        image: "https://i.pinimg.com/736x/4a/55/c3/4a55c3cd09453de8ef82b1b361018372.jpg",
+        videoUrl:  "https://www.youtube.com/embed/GiWAAdg50Is?si=Q94ca9eqJGB-yfVZ"
+
     },
     {
-        image: "https://img.youtube.com/vi/1pHDWnXmK7Y/maxresdefault.jpg",
-        videoUrl: 'https://www.youtube.com/watch?v=1pHDWnXmK7Y'
+        image: "https://i.pinimg.com/736x/fd/43/c8/fd43c8535ea3c7573bf1c6a094b493e1.jpg",
+        videoUrl: "https://www.youtube.com/embed/T1becfC1nNk?si=wi7z-A5Gcc3b1qau"
     },
     {
-        image: "https://img.youtube.com/vi/umiKiW4En9g/maxresdefault.jpg",
-        videoUrl: 'https://www.youtube.com/watch?v=umiKiW4En9g'
+        image: "https://i.pinimg.com/736x/0f/df/9c/0fdf9c1fa6285a41f0e86feb127f7cec.jpg",
+        videoUrl: "https://www.youtube.com/embed/PAnpc9GOrnw? si=E0s6SrBOmMNacjGG"
     },
 ]
 
@@ -55,32 +56,32 @@ const dummySpeakersData = [
 
 export const dummyEventsData = [
     {
-        "_id": "324544",
-        "id": 324544,
-        "title": "Tech Innovation Summit 2025",
-        "description": "Join industry leaders and innovators for a day of cutting-edge technology discussions, networking, and future-focused presentations. Discover the latest trends in AI, blockchain, and sustainable tech solutions.",
-        "poster_path": "https://image.tmdb.org/t/p/original/dDlfjR7gllmr8HTeN6rfrYhTdwX.jpg",
-        "backdrop_path": "https://image.tmdb.org/t/p/original/op3qmNhvwEvyT7UFyPbIfQmKriB.jpg",
-        "categories": [
-            { "id": 1, "name": "Technology" },
-            { "id": 2, "name": "Business" },
-            { "id": 3, "name": "Networking" }
-        ],
+    "_id": "324544",
+    "id": 324544,
+    "title": "Tech Innovation Summit 2025",
+    "description": "Join industry leaders and innovators for a day of cutting-edge technology discussions, networking, and future-focused presentations. Discover the latest trends in AI, blockchain, and sustainable tech solutions.",
+    "poster_path": "https://i.pinimg.com/736x/a6/57/5d/a6575d1a90c41afd34181f20585c6f5d.jpg",
+    "backdrop_path": "https://i.pinimg.com/736x/98/37/f8/9837f8a4c755926bfa94795c315ad1b0.jpg",
+    "categories": [
+        { "id": 1, "name": "Technology" },
+        { "id": 2, "name": "Business" },
+        { "id": 3, "name": "Networking" }
+    ],
         "speakers": dummySpeakersData,
         "event_date": "2025-02-27",
         "location": "Convention Center, Nairobi",
         "tagline": "Shaping tomorrow's technology today.",
         "rating": 4.6,
         "attendee_count": 1500,
-        "duration": 480, // minutes (8 hours)
+        "duration": 480
     },
     {
         "_id": "1232546",
         "id": 1232546,
         "title": "Midnight Horror Experience",
         "description": "A spine-chilling immersive horror experience featuring live actors, escape rooms, and psychological thrills. Test your courage in this unforgettable night of terror and mystery.",
-        "poster_path": "https://image.tmdb.org/t/p/original/juA4IWO52Fecx8lhAsxmDgy3M3.jpg",
-        "backdrop_path": "https://image.tmdb.org/t/p/original/icFWIk1KfkWLZnugZAJEDauNZ94.jpg",
+        "poster_path": "https://i.pinimg.com/736x/63/80/8f/63808fd5f7173880f01f6559e54ce50f.jpg",
+        "backdrop_path": "https://i.pinimg.com/1200x/6d/e9/71/6de971cf441662f3c94ffed2b17085aa.jpg",
         "categories": [
             { "id": 4, "name": "Entertainment" },
             { "id": 5, "name": "Immersive Experience" }
@@ -91,15 +92,15 @@ export const dummyEventsData = [
         "tagline": "Face your fears in the dark.",
         "rating": 4.4,
         "attendee_count": 200,
-        "duration": 180, // minutes (3 hours)
+        "duration": 180
     },
     {
         "_id": "552524",
         "id": 552524,
         "title": "Family Fun Festival",
         "description": "A delightful family-friendly festival featuring games, live performances, food trucks, and activities for all ages. Create lasting memories with entertainment that brings families together.",
-        "poster_path": "https://image.tmdb.org/t/p/original/mKKqV23MQ0uakJS8OCE2TfV5jNS.jpg",
-        "backdrop_path": "https://image.tmdb.org/t/p/original/7Zx3wDG5bBtcfk8lcnCWDOLM4Y4.jpg",
+        "poster_path": "https://i.pinimg.com/1200x/4e/72/67/4e7267bb9b716f7963c87b30a9ba61f8.jpg",
+        "backdrop_path": "https://i.pinimg.com/1200x/79/74/62/79746255b6e34fab648f792ed0537f1f.jpg",
         "categories": [
             { "id": 6, "name": "Family" },
             { "id": 7, "name": "Festival" },
@@ -111,15 +112,15 @@ export const dummyEventsData = [
         "tagline": "Fun for the whole family.",
         "rating": 4.8,
         "attendee_count": 3000,
-        "duration": 360, // minutes (6 hours)
+        "duration": 360
     },
     {
         "_id": "668489",
         "id": 668489,
         "title": "Urban Action Sports Championship",
         "description": "Witness jaw-dropping stunts and athletic prowess as top athletes compete in skateboarding, BMX, and parkour competitions. High-energy action meets urban culture.",
-        "poster_path": "https://image.tmdb.org/t/p/original/ubP2OsF3GlfqYPvXyLw9d78djGX.jpg",
-        "backdrop_path": "https://image.tmdb.org/t/p/original/65MVgDa6YjSdqzh7YOA04mYkioo.jpg",
+        "poster_path": "https://i.pinimg.com/736x/4e/0e/b1/4e0eb159cd3aae3933f87ebb1ff621e8.jpg",
+        "backdrop_path": "https://i.pinimg.com/1200x/41/e5/1c/41e51c5ec99876b4dc7c3dc9f69c5c19.jpg",
         "categories": [
             { "id": 9, "name": "Sports" },
             { "id": 10, "name": "Competition" },
@@ -131,15 +132,15 @@ export const dummyEventsData = [
         "tagline": "Where skill meets street.",
         "rating": 4.7,
         "attendee_count": 800,
-        "duration": 300, // minutes (5 hours)
+        "duration": 300
     },
     {
         "_id": "950387",
         "id": 950387,
         "title": "Digital Creators Workshop",
         "description": "Learn from expert content creators and digital artists in this hands-on workshop. Discover the secrets of successful YouTube channels, Instagram growth, and digital art techniques.",
-        "poster_path": "https://image.tmdb.org/t/p/original/yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg",
-        "backdrop_path": "https://image.tmdb.org/t/p/original/2Nti3gYAX513wvhp8IiLL6ZDyOm.jpg",
+        "poster_path": "https://i.pinimg.com/736x/3e/8b/a4/3e8ba4ff99ac869558917de0003c3ff7.jpg",
+        "backdrop_path": "https://i.pinimg.com/1200x/5b/39/fa/5b39fac2f14d0c93d12a32a1222e862f.jpg",
         "categories": [
             { "id": 12, "name": "Workshop" },
             { "id": 13, "name": "Digital Art" },
@@ -152,15 +153,15 @@ export const dummyEventsData = [
         "tagline": "Build your digital empire.",
         "rating": 4.5,
         "attendee_count": 150,
-        "duration": 420, // minutes (7 hours)
+        "duration": 420
     },
     {
         "_id": "575265",
         "id": 575265,
         "title": "Entrepreneurship Summit: The Final Chapter",
         "description": "The ultimate entrepreneurship event featuring successful business leaders sharing their journeys, failures, and victories. Network with investors, mentors, and fellow entrepreneurs in this game-changing summit.",
-        "poster_path": "https://image.tmdb.org/t/p/original/z53D72EAOxGRqdr7KXXWp9dJiDe.jpg",
-        "backdrop_path": "https://image.tmdb.org/t/p/original/1p5aI299YBnqrEEvVGJERk2MXXb.jpg",
+        "poster_path": "https://i.pinimg.com/1200x/81/c2/8c/81c28cb75d7d47a916f5da3f0ac34ea4.jpg",
+        "backdrop_path": "https://i.pinimg.com/736x/15/72/43/1572439a1279bbf3326fafb5816feac2.jpg",
         "categories": [
             { "id": 16, "name": "Business" },
             { "id": 17, "name": "Entrepreneurship" },
@@ -172,15 +173,15 @@ export const dummyEventsData = [
         "tagline": "Your success story starts here.",
         "rating": 4.9,
         "attendee_count": 2000,
-        "duration": 600, // minutes (10 hours)
+        "duration": 600
     },
     {
         "_id": "986056",
         "id": 986056,
         "title": "Wellness & Mindfulness Retreat",
         "description": "Escape the hustle and bustle for a transformative wellness experience. Join expert practitioners for yoga, meditation, nutrition workshops, and holistic healing sessions.",
-        "poster_path": "https://image.tmdb.org/t/p/original/m9EtP1Yrzv6v7dMaC9mRaGhd1um.jpg",
-        "backdrop_path": "https://image.tmdb.org/t/p/original/rthMuZfFv4fqEU4JVbgSW9wQ8rs.jpg",
+        "poster_path": "https://i.pinimg.com/736x/3a/60/e1/3a60e137b8d6ddc414ac263ed770663f.jpg",
+        "backdrop_path": "https://i.pinimg.com/736x/e4/8d/3f/e48d3f0bf339c854cc010a071340f5a9.jpg",
         "categories": [
             { "id": 19, "name": "Wellness" },
             { "id": 20, "name": "Mindfulness" },
@@ -192,9 +193,10 @@ export const dummyEventsData = [
         "tagline": "Restore your mind, body, and soul.",
         "rating": 4.8,
         "attendee_count": 500,
-        "duration": 540, // minutes (9 hours)
+        "duration": 540
     }
 ]
+
 
 export const dummyDateTimeData = {
     "2025-07-24": [
