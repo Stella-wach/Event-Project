@@ -71,6 +71,7 @@ export const dummyEventsData = [
         "event_date": "2025-02-27",
         "location": "Convention Center, Nairobi",
         "tagline": "Shaping tomorrow's technology today.",
+        "price": "KSH 3500",
         "rating": 4.6,
         "attendee_count": 1500,
         "duration": 480
@@ -80,7 +81,7 @@ export const dummyEventsData = [
         "id": 1232546,
         "title": "Midnight Horror Experience",
         "description": "A spine-chilling immersive horror experience featuring live actors, escape rooms, and psychological thrills. Test your courage in this unforgettable night of terror and mystery.",
-        "poster_path": "https://i.pinimg.com/736x/63/80/8f/63808fd5f7173880f01f6559e54ce50f.jpg",
+        "poster_path": "https://i.pinimg.com/736x/a2/78/55/a2785594ca2414f0fbb66b684db2bd18.jpg",
         "backdrop_path": "https://i.pinimg.com/1200x/6d/e9/71/6de971cf441662f3c94ffed2b17085aa.jpg",
         "categories": [
             { "id": 4, "name": "Entertainment" },
@@ -90,6 +91,7 @@ export const dummyEventsData = [
         "event_date": "2025-04-23",
         "location": "Haunted Manor, Karen",
         "tagline": "Face your fears in the dark.",
+         "price": "KSH 2500",
         "rating": 4.4,
         "attendee_count": 200,
         "duration": 180
@@ -109,7 +111,8 @@ export const dummyEventsData = [
         "speakers": dummySpeakersData,
         "event_date": "2025-05-17",
         "location": "Uhuru Park, Nairobi",
-        "tagline": "Fun for the whole family.",
+        "tagline": "Fun for the whole family.", 
+        "price": "KSH 1500",
         "rating": 4.8,
         "attendee_count": 3000,
         "duration": 360
@@ -130,6 +133,7 @@ export const dummyEventsData = [
         "event_date": "2025-04-25",
         "location": "Skate Park, Westlands",
         "tagline": "Where skill meets street.",
+        "price": "KSH 2000",
         "rating": 4.7,
         "attendee_count": 800,
         "duration": 300
@@ -151,6 +155,7 @@ export const dummyEventsData = [
         "event_date": "2025-03-31",
         "location": "Creative Hub, Kilimani",
         "tagline": "Build your digital empire.",
+        "price": "KSH 3000",
         "rating": 4.5,
         "attendee_count": 150,
         "duration": 420
@@ -171,6 +176,7 @@ export const dummyEventsData = [
         "event_date": "2025-05-17",
         "location": "KICC, Nairobi",
         "tagline": "Your success story starts here.",
+        "price": "KSH 4000",
         "rating": 4.9,
         "attendee_count": 2000,
         "duration": 600
@@ -191,6 +197,7 @@ export const dummyEventsData = [
         "event_date": "2025-04-30",
         "location": "Serenity Gardens, Karen",
         "tagline": "Restore your mind, body, and soul.",
+        "price": "KSH 5000",
         "rating": 4.8,
         "attendee_count": 500,
         "duration": 540
@@ -230,7 +237,7 @@ export const dummyDashboardData = {
             "_id": "68352363e96d99513e4221a4",
             "event": dummyEventsData[0],
             "eventDateTime": "2025-06-30T02:30:00.000Z",
-            "ticketPrice": 59,
+            "ticketPrice": 2500,
             "occupiedSeats": {
                 "A1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
                 "B1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
@@ -241,21 +248,21 @@ export const dummyDashboardData = {
             "_id": "6835238fe96d99513e4221a8",
             "event": dummyEventsData[1],
             "eventDateTime": "2025-06-30T15:30:00.000Z",
-            "ticketPrice": 81,
+            "ticketPrice": 2500,
             "occupiedSeats": {},
         },
         {
             "_id": "6835238fe96d99513e4221a9",
             "event": dummyEventsData[2],
             "eventDateTime": "2025-06-30T03:30:00.000Z",
-            "ticketPrice": 81,
+            "ticketPrice": 3500,
             "occupiedSeats": {},
         },
         {
             "_id": "6835238fe96d99513e4221aa",
             "event": dummyEventsData[3],
             "eventDateTime": "2025-07-15T16:30:00.000Z",
-            "ticketPrice": 81,
+            "ticketPrice": 1500,
             "occupiedSeats": {
                 "A1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
                 "A2": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
@@ -267,7 +274,7 @@ export const dummyDashboardData = {
             "_id": "683682072b5989c29fc6dc0d",
             "event": dummyEventsData[4],
             "eventDateTime": "2025-06-05T15:30:00.000Z",
-            "ticketPrice": 49,
+            "ticketPrice": 2000,
             "occupiedSeats": {
                 "A1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
                 "A2": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
@@ -282,7 +289,7 @@ export const dummyDashboardData = {
             "_id": "68380044686d454f2116b39a",
             "event": dummyEventsData[5],
             "eventDateTime": "2025-06-20T16:00:00.000Z",
-            "ticketPrice": 79,
+            "ticketPrice": 3500,
             "occupiedSeats": {
                 "A1": "user_2xl7eCSUHddibk5lRxfOtw9RMwX",
                 "A2": "user_2xl7eCSUHddibk5lRxfOtw9RMwX"
@@ -294,40 +301,40 @@ export const dummyDashboardData = {
 export const dummyBookingData = [
     {
         "_id": "68396334fb83252d82e17295",
-        "user": { "name": "GreatStack", },
+        "user": { "name": "Gracious", },
         "event": {
             _id: "68352363e96d99513e4221a4",
             event: dummyEventsData[0],
-            eventDateTime: "2025-06-30T02:30:00.000Z",
-            ticketPrice: 59,
+            eventDateTime: "2025-06-30T06:30:00.000Z",
+            ticketPrice: 2500,
         },
-        "amount": 98,
+        "amount": 7000,
         "bookedSeats": ["D1", "D2"],
         "isPaid": false,
     },
     {
         "_id": "68396334fb83252d82e17296",
-        "user": { "name": "GreatStack", },
+        "user": { "name": "Gracious", },
         "event": {
             _id: "68352363e96d99513e4221a4",
             event: dummyEventsData[0],
-            eventDateTime: "2025-06-30T02:30:00.000Z",
-            ticketPrice: 59,
+            eventDateTime: "2025-06-30T06:30:00.000Z",
+            ticketPrice: 2500,
         },
-        "amount": 49,
+        "amount": 3500,
         "bookedSeats": ["A1"],
         "isPaid": true,
     },
     {
         "_id": "68396334fb83252d82e17297",
-        "user": { "name": "GreatStack", },
+        "user": { "name": "Gracious", },
         "event": {
             _id: "68352363e96d99513e4221a4",
             event: dummyEventsData[0],
-            eventDateTime: "2025-06-30T02:30:00.000Z",
-            ticketPrice: 59,
+            eventDateTime: "2025-06-30T06:30:00.000Z",
+            ticketPrice: 2500,
         },
-        "amount": 147,
+        "amount": 12700,
         "bookedSeats": ["A1", "A2","A3"],
         "isPaid": true,
     },

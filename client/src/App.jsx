@@ -24,8 +24,8 @@ const isAdminRoute = useLocation().pathname.startsWith('/admin');
 
   <Route path='/' element={<Home/>}/>
   <Route path='/events' element={<Events/>}/>
-  <Route path='/events/:id' element={<EventDetails/>}/>
-  <Route path='/events/:id/:date' element={<SeatLayout/>}/>
+  <Route path='/event/:id' element={<EventDetails/>}/>
+  <Route path='/event/:id/:date' element={<SeatLayout/>}/>
   <Route path='/my-bookings' element={<MyBookings/>}/>
   <Route path='/favorite' element={<Favorite/>}/>
 
