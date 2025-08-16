@@ -1,7 +1,7 @@
 import { StarIcon } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import timeFormat from '../library/dateFormat';
+import timeFormat from '../library/TimeFormat';
 
 const EventCard = ({ event }) => {
   const navigate = useNavigate();
@@ -21,6 +21,8 @@ const EventCard = ({ event }) => {
       <p className='font-semibold mt-2 truncate'>{event?.title || 'Untitled'}</p>
 
       <p className='text-sm text-gray-400 mt-2'>
+        {event?.price || 'Price not specified'} 
+        {' '} <br />
         {event?.event_date ? new Date(event.event_date).getFullYear() : 'N/A'} ●{' '}
         {(Array.isArray(event?.categories) ? event.categories.slice(0, 2) : [])
           .map(category => category?.name)
