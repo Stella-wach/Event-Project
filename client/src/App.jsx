@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Events from './pages/Events'
 import EventDetails from './pages/EventDetails'
 import SeatLayout from './pages/SeatLayout'
+import EventCheckout from './pages/EventCheckout';
 import MyBookings from './pages/MyBookings'
 import Favorite from './pages/Favorite'
 import {Toaster} from 'react-hot-toast'
@@ -25,7 +26,7 @@ const isAdminRoute = useLocation().pathname.startsWith('/admin');
   <Route path='/' element={<Home/>}/>
   <Route path='/events' element={<Events/>}/>
   <Route path='/event/:id' element={<EventDetails/>}/>
-  <Route path='/event/:id/:date' element={<SeatLayout/>}/>
+<Route path="/event/:id/checkout" element={<EventCheckout />} />
   <Route path='/my-bookings' element={<MyBookings/>}/>
   <Route path='/favorite' element={<Favorite/>}/>
 
