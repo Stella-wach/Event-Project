@@ -3,11 +3,13 @@ import { dummyDateTimeData, dummyEventsData } from '../assets/assets'
 import BlurCircle from '../components/BlurCircle'
 import { Heart, StarIcon, Ticket } from 'lucide-react'
 import timeFormat from '../library/TimeFormat'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate  } from 'react-router-dom'
 
 const EventDetails = () => {
   const { id } = useParams()
   const [event, setEvent] = useState(null)
+ 
+  const navigate = useNavigate();
 
   const getEvent = async () => {
     const found = dummyEventsData.find(event => event._id === id)
@@ -54,12 +56,13 @@ const EventDetails = () => {
           </p>
 
           <div className='flex items-center gap-4 mt-4'>
-            <button className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dull transition rounded-full font-medium text-white'>
-              <Ticket className='w-5 h-5' />
-
-              <a href="#dateSelect">Buy Tickets</a>
-              
-              </button>
+            <button 
+  onClick={() => navigate(`/event/${event.event._id}/checkout`)}
+  className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dull transition  cursor-pointer rounded-full font-medium text-white'
+>
+  <Ticket className='w-5 h-5' />
+  Buy Tickets
+</button>
 
             
 
