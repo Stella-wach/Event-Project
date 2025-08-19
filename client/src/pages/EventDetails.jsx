@@ -90,7 +90,7 @@ const EventDetails = () => {
       </div>
       </div>
     </div>
-  ) : <div>Loading....</div>
+  ) : <Loading />
 }
 
 export default EventDetails
