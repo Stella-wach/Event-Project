@@ -12,6 +12,7 @@ const Home = () => {
         <HeroSection />
         <FeaturedSection />
         <EventPreview />
+        
        
         
       </div>

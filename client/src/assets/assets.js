@@ -30,7 +30,7 @@ export const dummyEventMedia = [
     },
     {
         image: "https://i.pinimg.com/736x/0f/df/9c/0fdf9c1fa6285a41f0e86feb127f7cec.jpg",
-        videoUrl: "https://www.youtube.com/embed/PAnpc9GOrnw? si=E0s6SrBOmMNacjGG"
+        videoUrl: "https://www.youtube.com/embed/PAnpc9GOrnw?si=E0s6SrBOmMNacjGG"
     },
 ]
 
@@ -272,74 +272,79 @@ export const dummyDateTimeData = {
 }
 
 export const dummyDashboardData = {
-    "totalBookings": 14,
-    "totalRevenue": 1517,
-    "totalUsers": 5,
-    "activeEvents": [
-        {
-            "_id": "68352363e96d99513e4221a4",
-            "event": dummyEventsData[0],
-            "eventDateTime": "2025-06-30T02:30:00.000Z",
-            "ticketPrice": 2500,
-            "occupiedSeats": {
-                "A1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "B1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "C1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok"
-            },
-        },
-        {
-            "_id": "6835238fe96d99513e4221a8",
-            "event": dummyEventsData[1],
-            "eventDateTime": "2025-06-30T15:30:00.000Z",
-            "ticketPrice": 2500,
-            "occupiedSeats": {},
-        },
-        {
-            "_id": "6835238fe96d99513e4221a9",
-            "event": dummyEventsData[2],
-            "eventDateTime": "2025-06-30T03:30:00.000Z",
-            "ticketPrice": 3500,
-            "occupiedSeats": {},
-        },
-        {
-            "_id": "6835238fe96d99513e4221aa",
-            "event": dummyEventsData[3],
-            "eventDateTime": "2025-07-15T16:30:00.000Z",
-            "ticketPrice": 1500,
-            "occupiedSeats": {
-                "A1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "A2": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "A3": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "A4": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok"
-            },
-        },
-        {
-            "_id": "683682072b5989c29fc6dc0d",
-            "event": dummyEventsData[4],
-            "eventDateTime": "2025-06-05T15:30:00.000Z",
-            "ticketPrice": 2000,
-            "occupiedSeats": {
-                "A1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "A2": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "A3": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "B1": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "B2": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok",
-                "B3": "user_2xO4XPCgWWwWq9EHuQxc5UWqIok"
-            },
-            "__v": 0
-        },
-        {
-            "_id": "68380044686d454f2116b39a",
-            "event": dummyEventsData[5],
-            "eventDateTime": "2025-06-20T16:00:00.000Z",
-            "ticketPrice": 3500,
-            "occupiedSeats": {
-                "A1": "user_2xl7eCSUHddibk5lRxfOtw9RMwX",
-                "A2": "user_2xl7eCSUHddibk5lRxfOtw9RMwX"
-            }
-        }
-    ]
-}
+  totalBookings: 14,
+  totalRevenue: 1517,
+  totalUsers: 5,
+  activeEvents: [
+    {
+      _id: "68352363e96d99513e4221a4",
+      event: dummyEventsData[0],
+      eventDateTime: "2025-06-30T02:30:00.000Z",
+      ticketPrice: 2500,
+      ticketTypes: {
+        advance: 3,
+        vip: 1,
+        student: 0,
+      },
+    },
+    {
+      _id: "6835238fe96d99513e4221a8",
+      event: dummyEventsData[1],
+      eventDateTime: "2025-06-30T15:30:00.000Z",
+      ticketPrice: 2500,
+      ticketTypes: {
+        advance: 0,
+        vip: 0,
+        student: 0,
+      },
+    },
+    {
+      _id: "6835238fe96d99513e4221a9",
+      event: dummyEventsData[2],
+      eventDateTime: "2025-06-30T03:30:00.000Z",
+      ticketPrice: 3500,
+      ticketTypes: {
+        advance: 1,
+        vip: 2,
+        student: 1,
+      },
+    },
+    {
+      _id: "6835238fe96d99513e4221aa",
+      event: dummyEventsData[3],
+      eventDateTime: "2025-07-15T16:30:00.000Z",
+      ticketPrice: 1500,
+      ticketTypes: {
+        advance: 2,
+        vip: 0,
+        student: 2,
+      },
+    },
+    {
+      _id: "683682072b5989c29fc6dc0d",
+      event: dummyEventsData[4],
+      eventDateTime: "2025-06-05T15:30:00.000Z",
+      ticketPrice: 2000,
+      ticketTypes: {
+        advance: 4,
+        vip: 1,
+        student: 1,
+      },
+    },
+    {
+      _id: "68380044686d454f2116b39a",
+      event: dummyEventsData[5],
+      eventDateTime: "2025-06-20T16:00:00.000Z",
+      ticketPrice: 3500,
+      ticketTypes: {
+        advance: 0,
+        vip: 2,
+        student: 0,
+      },
+    },
+  ],
+};
+
 
 
 
@@ -359,8 +364,12 @@ export const dummyBookingData = [
       },
       eventDateTime: "2025-06-30T06:30:00.000Z"
     },
+    ticketTypes: {
+      advance: 2,
+      vip: 0,
+      student: 1
+    },
     amount: 7000,
-    bookedSeats: ["D1", "D2"],
     isPaid: false
   },
   {
@@ -378,8 +387,12 @@ export const dummyBookingData = [
       },
       eventDateTime: "2025-06-30T06:30:00.000Z"
     },
+    ticketTypes: {
+      advance: 1,
+      vip: 1,
+      student: 0
+    },
     amount: 3500,
-    bookedSeats: ["A1"],
     isPaid: true
   },
   {
@@ -397,8 +410,14 @@ export const dummyBookingData = [
       },
       eventDateTime: "2025-06-30T06:30:00.000Z"
     },
+    ticketTypes: {
+      advance: 3,
+      vip: 2,
+      student: 5
+    },
     amount: 12700,
-    bookedSeats: ["A1", "A2", "A3"],
     isPaid: true
   }
 ];
+
+
