@@ -80,7 +80,7 @@ export const dummyEventsData = [
         "tagline": "Shaping tomorrow's technology today.",
         "price": "KSH 2000",
         "rating": 4.6,
-        "attendee_count": 1500,
+        "attendee_count": 15000,
         "duration": 480
     },
     {
@@ -106,7 +106,7 @@ export const dummyEventsData = [
         "tagline": "Face your fears in the dark.",
          "price": "KSH 2500",
         "rating": 4.4,
-        "attendee_count": 200,
+        "attendee_count": 26000,
         "duration": 180
     },
     {
@@ -133,7 +133,7 @@ export const dummyEventsData = [
         "tagline": "Fun for the whole family.", 
         "price": "KSH 1500",
         "rating": 4.8,
-        "attendee_count": 3000,
+        "attendee_count": 38000,
         "duration": 360
     },
     {
@@ -160,7 +160,7 @@ export const dummyEventsData = [
         "tagline": "Where skill meets street.",
         "price": "KSH 2000",
         "rating": 4.7,
-        "attendee_count": 800,
+        "attendee_count": 80880,
         "duration": 300
     },
     {
@@ -188,7 +188,7 @@ export const dummyEventsData = [
         "tagline": "Build your digital empire.",
         "price": "KSH 3000",
         "rating": 4.5,
-        "attendee_count": 150,
+        "attendee_count": 19050,
         "duration": 420
     },
     {
@@ -215,7 +215,7 @@ export const dummyEventsData = [
         "tagline": "Your success story starts here.",
         "price": "KSH 4000",
         "rating": 4.9,
-        "attendee_count": 2000,
+        "attendee_count": 209000,
         "duration": 600
     },
     {
@@ -242,7 +242,7 @@ export const dummyEventsData = [
         "tagline": "Restore your mind, body, and soul.",
         "price": "KSH 3500",
         "rating": 4.8,
-        "attendee_count": 500,
+        "attendee_count": 50000,
         "duration": 540
     }
 ]
