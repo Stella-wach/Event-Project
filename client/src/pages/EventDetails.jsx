@@ -4,6 +4,7 @@ import BlurCircle from '../components/BlurCircle'
 import { Heart, StarIcon, Ticket } from 'lucide-react'
 import timeFormat from '../library/TimeFormat'
 import { useParams, useNavigate  } from 'react-router-dom'
+import Loading from '../components/Loading'
 
 const EventDetails = () => {
   const { id } = useParams()

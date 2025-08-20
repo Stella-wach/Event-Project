@@ -25,11 +25,11 @@ const Footer = () => {
           <div>
             <h2 className="font-semibold mb-4">Company</h2>
             <ul className="text-sm space-y-2">
-              <li><a href="#" className="hover:text-white transition">Home</a></li>
-              <li><a href="#" className="hover:text-white transition">Events</a></li>
-              <li><a href="#" className="hover:text-white transition">Venues</a></li>
-              <li><a href="#" className="hover:text-white transition">Categories</a></li>
-              <li><a href="#" className="hover:text-white transition">Favorites</a></li>
+              <li><a href="/" className="hover:text-white transition">Home</a></li>
+              <li><a href="/events" className="hover:text-white transition">Events</a></li>
+              <li><a href="/" className="hover:text-white transition">Venues</a></li>
+              <li><a href="/" className="hover:text-white transition">Categories</a></li>
+              <li><a href="/favorite" className="hover:text-white transition">Favorites</a></li>
             </ul>
           </div>
           <div>
