@@ -40,20 +40,22 @@ getMyBookings()
 <div className='flex flex-col p-4'>
   <p className='text-lg font-semibold'>{items.event.event.title}</p>
 
-  <p className='text-gray-400 text-sm mt-auto'>Showtime: {dateFormat(items.event.eventDateTime)}</p>
+  <p className='text-gray-400 text-sm mt-auto'>Eventtime: {dateFormat(items.event.eventDateTime)}</p>
   
 </div>
   </div>
 
     <div className='flex flex-col md:items-end md:text-right justify-between p-4'>
       <div className='flex items-center gap-4'>
-        <p className='text-2xl font-semibold mb-3'>{currency}{items.event.ticketPrice}</p>
+        <p className='text-2xl font-semibold mb-3'>{currency}{items.amount}</p>
         {!items.isPaid && <button className='bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer'>Pay Now</button>}
       </div>
 
       <div className='text-sm'>
-      <p><span className='text-gray-400'>Total Tickets:</span>{items.bookedSeats.length}</p>
-      <p><span className='text-gray-400'>Seat Number:</span>{items.bookedSeats.join(", ")}</p>
+      <p><span className='text-gray-400'>Total Tickets:</span> {
+  Object.values(items.ticketTypes).reduce((sum, num) => sum + num, 0)
+}</p>
+      
       </div>
       </div>
     </div>
