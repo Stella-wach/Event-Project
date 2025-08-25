@@ -40,12 +40,9 @@ const syncUserUpdation = inngest.createFunction(
   }
 );
 
-// 🚨 remove or comment out the destructuring version of syncUserDeletion
-// const syncUserDeletion = ...
-
-// ✅ Keep only this for testing:
-export default inngest.createFunction(
-  { name: "delete-user-with-clerk" },
+// ✅ Delete user from Clerk event (for now just logging payload)
+const syncUserDeletion = inngest.createFunction(
+  { id: "delete-user-with-clerk" },
   { event: "clerk/user.deleted" },
   async ({ event }) => {
     console.log("Clerk delete event payload:", JSON.stringify(event, null, 2));
@@ -53,9 +50,9 @@ export default inngest.createFunction(
   }
 );
 
-// Export functions
+// Export functions array
 export const functions = [
   syncUserCreation,
   syncUserUpdation,
-  // 🚨 leave out syncUserDeletion until we fix payload shape
+  syncUserDeletion, // ✅ included here instead of default export
 ];
