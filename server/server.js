@@ -27,12 +27,42 @@ app.use(clerkMiddleware());
 // API Routes
 app.get('/', (req, res) => res.send('Server is Live!'));
 app.use('/api/inngest', serve({ client: inngest, functions }));
-app.use("/api/events", eventRouter);
+app.use("/api/event", eventRouter);
 app.use('/api/booking', bookingRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/user', userRouter);
 
+// Add this after connectDB() in server.js
+import User from './models/user.js';
 
+const createAdminUser = async () => {
+  try {
+    // Replace with your actual Clerk user ID
+    const clerkUserId = "user_31sbnx9sYU00cdhH9zU466MFK5G"; 
+    
+    const adminUser = await User.findOneAndUpdate(
+      { _id: clerkUserId },  // ✅ search by _id instead of clerkId
+      {
+        _id: clerkUserId,
+        email: "wstellawambui@gmail.com",
+        image: "https://example.com/image.jpg",
+        firstName: "Stella",
+        lastName: "Wachira",
+        role: "admin"
+      },
+      { upsert: true, new: true }
+    );
+
+    return adminUser;
+  } catch (error) {
+    console.error("❌ Error creating admin user:", error.message);
+  }
+};
+
+
+
+// Call this once
+await createAdminUser();
 
 
 // Only run listen() locally
