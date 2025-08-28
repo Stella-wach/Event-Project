@@ -4,8 +4,11 @@ import Loading from '../../components/Loading';
 import Title from '../../components/admin/Title';
 import { CheckIcon, DeleteIcon, StarIcon } from 'lucide-react';
 import { kConverter } from '../../library/kConverter';
+import {useAppContext} from '../../context/appContext';
 
 const AddEvents = () => {
+
+  const {axios, getToken, user} = useAppContext();
 
   const currency = import.meta.VITE_CURRENCY
   const [nowTrendingEvents, setNowTrendingEvents] = useState([]);
@@ -17,7 +20,20 @@ const AddEvents = () => {
 
   const fetchNowTrendingEvents = async () => {
 
-   setNowTrendingEvents(dummyEventsData)
+    try{
+        const {data} = await axios.get('/api/event/active-events', {headers: {Authorization: `Bearer ${await getToken()}`}})
+
+          if(data.success){
+            setNowTrendingEvents(data.event)
+          }
+
+
+    }catch(error) {
+
+      console.error('Error fetching events:', error)
+
+    }
+   
   };
 
   const handleDateTimeAdd =() => {
@@ -66,7 +82,7 @@ const AddEvents = () => {
 
     <div className='group flex flex-wrap gap-4 mt-4 w-max'>
       {nowTrendingEvents.map  ((event) =>(
-        <div key = {event._id} className={`elative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300 `} onClick={()=> setSelectedEvents(event.id)}> 
+        <div key = {event._id} className={`elative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300 `} onClick={()=> setSelectedEvents(event._id)}> 
 
         <div className='relative rounded-lg overflow-hidden'>
 
@@ -84,7 +100,7 @@ const AddEvents = () => {
 
         </div>
      
-     {selectedEvents === event.id && (
+     {selectedEvents === event._id && (
       <div className='absolute top-2 right-2 flex items-center justify-center bg-primary h-6 w-6 rounded'>
         <CheckIcon className='w-4 h-4 text-white' strokeWidth={2.5} />
 
@@ -172,4 +188,3 @@ const AddEvents = () => {
 } 
 
 export default AddEvents
-

@@ -5,20 +5,15 @@ import Events from "../models/Event.js";
 //API CONTROLLER FUNCTIONS TO GET USER BOOKINGS
 export const getUserBookings = async (req, res)=>{
     try{
+         const user = req.auth().userId;
 
-        const user = req.auth().userId;
+         const bookings = await Booking.find({user}).populate('event').sort({createdAt: -1})
 
-        const bookings = await Booking.find({user}).populate({
-            path: "events",
-            populate: {path: "event"}
-        }).sort({createdAt: -1})
-
-        res.json({success:true, bookings})
+         res.json({success:true, bookings})
     }catch(error){
     console.error(error.message);
     res.json({success: false, message: error.message});
-
-    }
+     }
 }
 
 //API CONTROLLER FUNCTION TO UPDATE FAVORITE MOVIE IN CLERK METADATA
@@ -36,8 +31,8 @@ try{
     if(!user.privateMetadata.favorites.includes(eventId)){
         user.privateMetadata.favorites.push(eventId)
     } else{
-        user.privateMetadata.favorites =  user.privateMetadata.favorites.filter(item => item !== eventId) 
-    }
+        user.privateMetadata.favorites =  user.privateMetadata.favorites.filter(item => item !== eventId)
+     }
 
     await clerkClient.users.updateUserMetadata(userId, {privateMetadata: user.privateMetadata})
 
@@ -47,8 +42,7 @@ try{
  console.error(error.message);
  res.json({success: false, message: error.message});
   }
-}
-
+} 
 
 export const getFavorites = async (req, res) =>{
     try{
@@ -59,8 +53,7 @@ export const getFavorites = async (req, res) =>{
         const events = await Events.find({_id: {$in: favorites}})
 
         res.json({success: true, events})
-
-    }catch (error) {
+     }catch (error) {
         console.error(error.message);
         res.json({success:false, message: error.message});
     }
