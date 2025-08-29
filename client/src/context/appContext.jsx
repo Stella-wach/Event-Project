@@ -36,8 +36,10 @@ export const AppProvider = ({ children })=>{
 
     const fetchEvents = async ()=> {
         try{
-            const {data} = await axios.get('/api/event/all')  // ✅ added leading slash
-            if(data.success){  // ✅ fixed typo from seccess to success
+            const {data} = await axios.get('/api/event/all', {
+                headers: { Authorization: `Bearer ${await getToken()}` }   // ✅ added auth header
+            })
+            if(data.success){
                 setEvents(data.events)
             } else{
                 toast.error(data.message)
@@ -49,7 +51,7 @@ export const AppProvider = ({ children })=>{
 
     const fetchFavoriteEvents = async ()=> {
         try {
-            const {data} = await axios.get('/api/user/favorites', {headers: {Authorization: `Bearer ${await getToken()}`}}) // ✅ added leading slash
+            const {data} = await axios.get('/api/user/favorites', {headers: {Authorization: `Bearer ${await getToken()}`}})
 
             if(data.success){
                 setFavoriteEvents(data.events)

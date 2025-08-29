@@ -1,10 +1,10 @@
 import Booking from '../models/booking.js';
-import Events from '../models/Event.js'
+import Event from '../models/Event.js'
 
 //Function to check availability of Tickets for an event
 const checkTicketsAvailability = async (eventId, selectedTickets)=>{
     try{
-        const eventData = await Events.findById(eventId)
+        const eventData = await Event.findById(eventId)
         if(!eventData) return false;
 
         const bookedTickets = eventData.bookedTickets;
@@ -30,8 +30,8 @@ export const createBooking = async (req, res)=>{
         return res.json({success: false, message: "Selected Tickets are not avalable."})
     }
 
-     // Get the events details
-     const eventData = await Events.findById(eventId);
+     // Get the Event details
+     const eventData = await Event.findById(eventId);
 
      //Create a new booking
      const booking = await Booking.create({
@@ -61,7 +61,7 @@ export const createBooking = async (req, res)=>{
 export const getBookedTickets = async (req, res)=>{
      try{
          const {eventId} = req.params;
-        const eventData = await Events.findById(eventId)
+        const eventData = await Event.findById(eventId)
 
         const bookedTickets = Object.keys(eventData.bookedTickets)
 

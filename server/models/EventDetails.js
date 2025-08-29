@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const eventDetailsSchema = new mongoose.Schema(
   {
-    eventId: { type: String, ref: "Event", required: true }, // references Event._id
+    eventId: { type: mongoose.Schema.Types.ObjectId, ref: "Event", required: true }, // ✅ Changed "Events" to "Event"
     eventDateTime: { type: Date, required: true },
     eventPrice: { type: Number, required: true },
 

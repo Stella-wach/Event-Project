@@ -1,6 +1,6 @@
 import { clerkClient } from "@clerk/express";
 import Booking from "../models/booking.js";
-import Events from "../models/Event.js";
+import Event from "../models/Event.js";
 
 //API CONTROLLER FUNCTIONS TO GET USER BOOKINGS
 export const getUserBookings = async (req, res)=>{
@@ -50,7 +50,7 @@ export const getFavorites = async (req, res) =>{
         const favorites = user.privateMetadata.favorites;
 
         //Get events from database
-        const events = await Events.find({_id: {$in: favorites}})
+        const events = await Event.find({_id: {$in: favorites}})
 
         res.json({success: true, events})
      }catch (error) {
