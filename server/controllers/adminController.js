@@ -1,5 +1,6 @@
 import Booking from "../models/booking.js"
-import Events from "../models/Event.js"
+import Event from "../models/Event.js"  // ✅ Fixed import
+import EventDetails from "../models/EventDetails.js"
 import User from "../models/user.js"
 
 // API to check if user is admin
@@ -9,30 +10,63 @@ export const isAdmin = async (req, res) => {
 
 // API to get dashboard data
 export const getDashboardData = async (req, res) => {
-    try {
-        const bookings = await Booking.find({ isPaid: true });
-        const activeEvents = await Events.find({});
+  try {
+    const bookings = await Booking.find({ isPaid: true });
+    const totalUsers = await User.countDocuments();
 
-        const totalUsers = await User.countDocuments();
+    // Get upcoming event details and populate event info
+    const activeEventDetails = await EventDetails.find({
+      eventDateTime: { $gte: new Date() }
+    }).populate("eventId");
 
-        const dashboardData = {
-            totalBookings: bookings.length,
-            totalRevenue: bookings.reduce((acc, booking) => acc + booking.amount, 0),
-            activeEvents,
-            totalUsers
-        }
+    // Normalize the data and include ticket prices
+    const activeEvents = activeEventDetails.map((detail) => ({
+      _id: detail._id,
+      title: detail.eventId?.title || "Untitled Event",
+      poster_path: detail.eventId?.poster_path || "/fallback.jpg",
+      rating: detail.eventId?.rating || 0,
+      eventDateTime: detail.eventDateTime,
+      eventPrice: detail.eventPrice,
+      ticketTypes: {
+        advance: detail.ticketTypes?.advance || 0,
+        vip: detail.ticketTypes?.vip || 0,
+        student: detail.ticketTypes?.student || 0
+      }
+    }));
 
-        res.json({ success: true, dashboardData })
-     } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: error.message })
-    }
-}
+    const dashboardData = {
+      totalBookings: bookings.length,
+      totalRevenue: bookings.reduce((acc, booking) => acc + booking.amount, 0),
+      totalUsers,
+      activeEvents,
+    };
+
+    return res.json({ success: true, dashboardData });
+  } catch (error) {
+    console.error("Dashboard error:", error.message);
+    return res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// API to get active events (PUBLIC for testing)
+export const getActiveEvents = async (req, res) => {
+  try {
+    const events = await Event.find({})  // ✅ Fixed from Events to Event
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, events });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+
 
 // API TO GET ALL EVENTS
 export const getAllEvents = async (req, res) => {
     try {
-        const events = await Events.find({})
+        const events = await Event.find({})  // ✅ Fixed from Events to Event
             .sort({ createdAt: -1 })
         res.json({ success: true, events })
      } catch (error) {
