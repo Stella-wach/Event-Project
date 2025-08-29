@@ -3,21 +3,38 @@ import { dummyBookingData } from '../assets/assets';
 import { LoaderIcon } from 'lucide-react';
 import BlurCircle from '../components/BlurCircle';
 import { dateFormat } from '../library/dateFormat';
+import { useAppContext } from '../context/appContext';
 
 const MyBookings = () => {
   const currency = import.meta.env.VITE_CURRENCY;
+
+  const { axios, getToken, user } = useAppContext()
 
   const [bookings, setBookings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
   const getMyBookings = async () =>{
-    setBookings(dummyBookingData)
+    try{
+      const {data} = await axios.get('/api/user/bookings', {
+        headers: {Authorization: `Bearer ${await getToken()}`}} )
+      
+        if (data.success){
+          setBookings(data.bookings)
+        }
+
+    }catch (error){
+      console.log(error)
+
+    }
     setIsLoading(false)
   }
 
   useEffect(()=>{
+    if(user){
 getMyBookings()
-  },[])
+
+    }
+  },[user])
   
   return !isLoading ?  (
     <div className='relative px-6 md:px-16 lg:px-40 pt-30 md:pt-40 min-h-[80vh]'>
