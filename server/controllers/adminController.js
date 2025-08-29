@@ -19,7 +19,10 @@ export const getDashboardData = async (req, res) => {
       eventDateTime: { $gte: new Date() }
     }).populate("eventId");
 
-    // Normalize the data and include ticket prices
+    console.log("Dashboard - found active events:", activeEventDetails.length);
+    console.log("First active event structure:", activeEventDetails[0]);
+
+    // Normalize the data and include both ticket counts AND prices
     const activeEvents = activeEventDetails.map((detail) => ({
       _id: detail._id,
       title: detail.eventId?.title || "Untitled Event",
@@ -27,10 +30,17 @@ export const getDashboardData = async (req, res) => {
       rating: detail.eventId?.rating || 0,
       eventDateTime: detail.eventDateTime,
       eventPrice: detail.eventPrice,
+      // Include both booking counts and prices
       ticketTypes: {
         advance: detail.ticketTypes?.advance || 0,
         vip: detail.ticketTypes?.vip || 0,
         student: detail.ticketTypes?.student || 0
+      },
+      // Add ticket prices - you might need to define these based on your business logic
+      ticketPrices: {
+        advance: detail.eventPrice, // Base price
+        vip: detail.eventPrice * 1.5, // VIP = 1.5x base price
+        student: detail.eventPrice * 0.7 // Student = 0.7x base price (discount)
       }
     }));
 
@@ -47,7 +57,6 @@ export const getDashboardData = async (req, res) => {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
-
 // API to get active events (PUBLIC for testing)
 export const getActiveEvents = async (req, res) => {
   try {
@@ -66,12 +75,21 @@ export const getActiveEvents = async (req, res) => {
 // API TO GET ALL EVENTS
 export const getAllEvents = async (req, res) => {
     try {
-        const events = await Event.find({})  // ✅ Fixed from Events to Event
-            .sort({ createdAt: -1 })
-        res.json({ success: true, events })
-     } catch (error) {
+        // Get EventDetails with populated event data  
+        const eventDetails = await EventDetails.find()
+            .populate("eventId")
+            .sort({ createdAt: -1 });
+
+        console.log("📊 All events - found:", eventDetails.length);
+        console.log("📊 First event structure:", eventDetails[0]);
+
+        return res.json({ 
+            success: true, 
+            events: eventDetails 
+        });
+    } catch (error) {
         console.error(error);
-        res.json({ success: false, message: error.message })
+        res.json({ success: false, message: error.message });
     }
 }
 

@@ -2,12 +2,14 @@ import { ArrowRight } from 'lucide-react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import BlurCircle from './BlurCircle'
-import { dummyEventsData } from '../assets/assets'
 import EventCard from './EventCard'
+import { useAppContext } from '../context/appContext'
 
 const FeaturedSection = () => {
 
     const navigate = useNavigate()
+    const { events} = useAppContext()
+
   return (
     <div className='px-6 md:px-16 lg:px24 xl:px-44 overflow-hidden'>
 
@@ -24,7 +26,7 @@ const FeaturedSection = () => {
         </div> 
 
      <div className='flex flex-wrap max-sm:justify-center gap-8 mt-8'>
-       {dummyEventsData.slice(0, 4).map((event) => (
+       {events.slice(0, 4).map((event) => (
          <EventCard key={event._id} event={event} />
        ))}
         </div> 
