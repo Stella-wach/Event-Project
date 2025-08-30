@@ -15,6 +15,11 @@ const AddEvents = () => {
   const [dateTimeSelection, setDateTimeSelection] = useState({});
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [eventPrice, setEventPrice] = useState("");
+  const [ticketPrices, setTicketPrices] = useState({
+    advance: "",
+    vip: "",
+    student: ""
+  });
 
   const [addingEvent, setAddingEvent] = useState(false)
 
@@ -24,7 +29,6 @@ const AddEvents = () => {
         headers: { Authorization: `Bearer ${await getToken()}` }
       });
      
-
       if (data.success) {
         setNowTrendingEvents(data.events);
       }
@@ -45,6 +49,9 @@ const AddEvents = () => {
       }
       return prev;
     });
+    
+    // Clear input after adding
+    setDateTimeInput("");
   };
 
   const handleRemoveTime = (date, time) => {
@@ -58,59 +65,83 @@ const AddEvents = () => {
     });
   };
 
-  //ADDING EVENTS
-  const handleSubmit = async ()=>{
-    try{
-        setAddingEvent(true)
+  // IMPROVED EVENT SUBMISSION
+  const handleSubmit = async () => {
+    try {
+      setAddingEvent(true);
 
-        if(!selectedEvents || Object.keys(dateTimeSelection).length === 0 || !eventPrice){
-          toast.error('Missing required fields');
-          return;
+      if (!selectedEvents || Object.keys(dateTimeSelection).length === 0 || !eventPrice) {
+        toast.error('Please select an event, date/time, and price');
+        return;
+      }
+
+      // Create separate EventDetails for each date/time combination
+      const eventDetailsPromises = [];
+      
+      for (const [date, times] of Object.entries(dateTimeSelection)) {
+        for (const time of times) {
+          const eventDateTime = `${date}T${time}`;
+          
+          const payload = {
+            eventId: String(selectedEvents),
+            eventDateTime: eventDateTime,
+            eventPrice: Number(eventPrice),
+            ticketTypes: {
+              advance: Number(ticketPrices.advance) || 0,
+              vip: Number(ticketPrices.vip) || 0,
+              student: Number(ticketPrices.student) || 0
+            }
+          };
+
+          console.log("Sending payload for", eventDateTime, ":", payload);
+
+          const eventPromise = axios.post('/api/event/add-event', payload, {
+            headers: { 
+              'Authorization': `Bearer ${await getToken()}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          eventDetailsPromises.push(eventPromise);
         }
+      }
 
-        // Get the first selected date/time
-        const firstDate = Object.keys(dateTimeSelection)[0];
-        const firstTime = dateTimeSelection[firstDate][0];
-        const eventDateTime = `${firstDate}T${firstTime}`;
-
-        const payload = {
-          eventId: String(selectedEvents), // Ensure it's a string
-          eventDateTime: eventDateTime,
-          eventPrice: Number(eventPrice)
-        }
-
-        console.log("Sending payload:", payload); // Debug log
-        console.log("EventId type:", typeof payload.eventId, "Length:", payload.eventId.length); // Debug log
-
-        const {data} = await axios.post('/api/event/add-event', payload, {
-          headers: { 
-            'Authorization': `Bearer ${await getToken()}`,
-            'Content-Type': 'application/json' // Ensure content type is set
-          }
-        })
-
-        if(data.success){
-          toast.success(data.message)
-          setSelectedEvents(null)
-          setDateTimeSelection({})
-          setEventPrice("")
-        } else{
-          toast.error(data.message)
-        }
-    }catch (error){
-        console.error("Submission error", error);
-        console.error("Error response:", error.response?.data); // Debug log
+      // Wait for all events to be added
+      const results = await Promise.all(eventDetailsPromises);
+      
+      // Check if all were successful
+      const allSuccessful = results.every(result => result.data.success);
+      
+      if (allSuccessful) {
+        toast.success(`Successfully added ${results.length} event schedule(s)!`);
         
-        // More specific error handling
-        if (error.response?.data?.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error('An error occurred please try again');
-        }
+        // Reset form
+        setSelectedEvents(null);
+        setDateTimeSelection({});
+        setEventPrice("");
+        setTicketPrices({ advance: "", vip: "", student: "" });
+        
+        // Optional: Trigger a refetch of events in other components
+        // You might want to add this to your context to update other components
+        
+      } else {
+        const failedCount = results.filter(result => !result.data.success).length;
+        toast.error(`${failedCount} event(s) failed to add`);
+      }
+      
+    } catch (error) {
+      console.error("Submission error", error);
+      console.error("Error response:", error.response?.data);
+      
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('An error occurred please try again');
+      }
     } finally {
-        setAddingEvent(false)
+      setAddingEvent(false);
     }
-  }
+  };
 
   useEffect(() => {
     if(user){
@@ -129,9 +160,11 @@ const AddEvents = () => {
           {nowTrendingEvents.map((event) => (
             <div
               key={event._id}
-              className={`relative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300`}
+              className={`relative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300 ${
+                selectedEvents === event._id ? 'ring-2 ring-primary' : ''
+              }`}
               onClick={() => {
-                console.log("Selected event ID:", event._id, "Type:", typeof event._id); // Debug log
+                console.log("Selected event ID:", event._id, "Type:", typeof event._id);
                 setSelectedEvents(event._id);
               }}
             >
@@ -167,7 +200,7 @@ const AddEvents = () => {
 
       {/* Event Price input */}
       <div className="mt-8">
-        <label className="block text-sm font-medium mb-2">Event Price</label>
+        <label className="block text-sm font-medium mb-2">Main Event Price</label>
         <div className="inline-flex items-center gap-2 border border-gray-600 px-3 py-2 rounded-md">
           <p className="text-gray-400 text-sm">{currency}</p>
           <input
@@ -178,6 +211,54 @@ const AddEvents = () => {
             placeholder="Enter event price"
             className="outline-none"
           />
+        </div>
+      </div>
+
+      {/* Ticket Prices */}
+      <div className="mt-6">
+        <label className="block text-sm font-medium mb-2">Ticket Prices (Optional)</label>
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Advance</label>
+            <div className="flex items-center gap-2 border border-gray-600 px-3 py-2 rounded-md">
+              <p className="text-gray-400 text-sm">{currency}</p>
+              <input
+                type="number"
+                value={ticketPrices.advance}
+                onChange={(e) => setTicketPrices(prev => ({...prev, advance: e.target.value}))}
+                placeholder="0"
+                className="outline-none w-full"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">VIP</label>
+            <div className="flex items-center gap-2 border border-gray-600 px-3 py-2 rounded-md">
+              <p className="text-gray-400 text-sm">{currency}</p>
+              <input
+                type="number"
+                value={ticketPrices.vip}
+                onChange={(e) => setTicketPrices(prev => ({...prev, vip: e.target.value}))}
+                placeholder="0"
+                className="outline-none w-full"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Student</label>
+            <div className="flex items-center gap-2 border border-gray-600 px-3 py-2 rounded-md">
+              <p className="text-gray-400 text-sm">{currency}</p>
+              <input
+                type="number"
+                value={ticketPrices.student}
+                onChange={(e) => setTicketPrices(prev => ({...prev, student: e.target.value}))}
+                placeholder="0"
+                className="outline-none w-full"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -195,7 +276,8 @@ const AddEvents = () => {
           />
           <button
             onClick={handleDateTimeAdd}
-            className="bg-primary/80 text-white px-3 py-2 text-sm rounded-lg hover:bg-primary cursor-pointer"
+            disabled={!dateTimeInput}
+            className="bg-primary/80 text-white px-3 py-2 text-sm rounded-lg hover:bg-primary cursor-pointer disabled:opacity-50"
           >
             Add Time
           </button>
@@ -205,38 +287,43 @@ const AddEvents = () => {
       {/* Display Selected Times */}
       {Object.keys(dateTimeSelection).length > 0 && (
         <div className="mt-6">
-          <h2 className="mb-2">Selected Date-Time</h2>
-          <ul className="space-y-3">
-            {Object.entries(dateTimeSelection).map(([date, times]) => (
-              <li key={date}>
-                <div className="font-medium">{date}</div>
-                <div className="flex flex-wrap gap-2 mt-1 text-sm">
-                  {times.map((time) => (
-                    <div
-                      key={time}
-                      className="border border-primary px-2 py-1 flex items-center rounded"
-                    >
-                      <span>{time}</span>
-                      <DeleteIcon
-                        onClick={() => handleRemoveTime(date, time)}
-                        width={15}
-                        className="ml-2 text-red-500 hover:text-red-700 cursor-pointer"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <h2 className="mb-2 text-sm font-medium">Selected Date-Time Slots</h2>
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <ul className="space-y-3">
+              {Object.entries(dateTimeSelection).map(([date, times]) => (
+                <li key={date}>
+                  <div className="font-medium text-sm text-gray-700">{new Date(date).toLocaleDateString()}</div>
+                  <div className="flex flex-wrap gap-2 mt-1 text-sm">
+                    {times.map((time) => (
+                      <div
+                        key={time}
+                        className="border border-primary bg-primary/5 px-3 py-1 flex items-center rounded-full"
+                      >
+                        <span>{new Date(`${date}T${time}`).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        <DeleteIcon
+                          onClick={() => handleRemoveTime(date, time)}
+                          width={15}
+                          className="ml-2 text-red-500 hover:text-red-700 cursor-pointer"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-gray-500 mt-2">
+              Total slots: {Object.values(dateTimeSelection).flat().length}
+            </p>
+          </div>
         </div>
       )}
 
       <button 
         onClick={handleSubmit} 
-        disabled={addingEvent} 
+        disabled={addingEvent || !selectedEvents || Object.keys(dateTimeSelection).length === 0 || !eventPrice} 
         className="bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50"
       >
-        {addingEvent ? 'Adding Event...' : 'Add Event'}
+        {addingEvent ? 'Adding Event...' : `Add Event (${Object.values(dateTimeSelection).flat().length} slot${Object.values(dateTimeSelection).flat().length !== 1 ? 's' : ''})`}
       </button>
     </>
   ) : (
