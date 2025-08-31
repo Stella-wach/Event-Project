@@ -1,3 +1,4 @@
+// Updated app.js - Add M-Pesa routes
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
@@ -6,19 +7,15 @@ import { clerkMiddleware } from '@clerk/express';
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
 import eventRouter from './routes/eventRoutes.js';
-// import { seedDummyEvents } from './controllers/eventController.js'; // commented out
 import bookingRouter from './routes/bookingRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import userRouter from './routes/userRoutes.js';
-
+import mpesaRouter from './routes/mpesaRoutes.js'; // Add M-Pesa routes
 
 const app = express();
 const port = 3000;
 
 await connectDB();
-
-// Commented out the seeding that was causing errors
-// await seedDummyEvents();
 
 // Middleware
 app.use(express.json());
@@ -32,6 +29,7 @@ app.use("/api/event", eventRouter);
 app.use('/api/booking', bookingRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/user', userRouter);
+app.use('/api/mpesa', mpesaRouter); // Add M-Pesa routes
 
 // Only run listen() locally
 if (process.env.NODE_ENV !== "production") {
