@@ -59,16 +59,21 @@ useEffect(() => {
 </thead>
 
 <tbody className='text-sm font-light'>
-  {Bookings.map((item, index) => (
+  {Bookings.map((item) => (
     <tr key={item._id}>
       <td className='p-2 min-w-45 pl-5'>{item.user.name}</td>
-      <td className='p-2'>{item.event.event.title}</td>
+      <td className='p-2'>{item.event.title}</td>
       <td className='p-2'>{dateFormat(item.event.eventDateTime)}</td>
-      <td className='p-2'>{Object.keys(item.ticketTypes).map(ticket => item.ticketTypes[ticket]).join(", ")}</td>
+      <td className='p-2'>
+        {Object.keys(item.ticketTypes)
+          .map(ticket => `${ticket}: ${item.ticketTypes[ticket]}`)
+          .join(", ")}
+      </td>
       <td className='p-2'>{currency} {item.amount}</td>
     </tr>
   ))}
 </tbody>
+
 
 
       </table>
