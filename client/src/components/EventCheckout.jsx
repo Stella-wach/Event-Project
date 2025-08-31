@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
-import { Minus, Plus, Ticket, CreditCard, LoaderIcon } from 'lucide-react'
+import { Minus, Plus, CreditCard, LoaderIcon, Phone } from 'lucide-react'
 import Loading from '../components/Loading'
 import BlurCircle from '../components/BlurCircle'
 import { dateFormat } from '../library/dateFormat'
@@ -20,8 +20,10 @@ const EventCheckout = () => {
     vip: 0,
     student: 0
   })
+  const [phoneNumber, setPhoneNumber] = useState('')
   const [loading, setLoading] = useState(true)
   const [booking, setBooking] = useState(false)
+  const [paymentMode, setPaymentMode] = useState('later') // 'now' or 'later'
 
   // Ticket prices based on base price
   const getTicketPrices = (basePrice) => ({
@@ -79,55 +81,175 @@ const EventCheckout = () => {
   }
 
   const handleBooking = async () => {
+    console.log("=== FRONTEND BOOKING PROCESS STARTED ===");
+    console.log("Payment mode:", paymentMode);
+    console.log("Phone number:", phoneNumber);
+    console.log("User ID:", user?.id);
+    console.log("Total tickets:", getTotalTickets());
+    console.log("Total amount:", calculateTotal());
+
     try {
       if (!user) {
+        console.log("No user logged in");
         toast.error("Please login to book tickets")
         return
       }
 
       if (getTotalTickets() === 0) {
+        console.log("No tickets selected");
         toast.error("Please select at least one ticket")
         return
       }
 
       if (!selectedDateTime) {
+        console.log("No datetime selected");
         toast.error("Please select an event time")
         return
       }
 
+      if (paymentMode === 'now' && !phoneNumber) {
+        console.log("M-Pesa selected but no phone number");
+        toast.error("Please enter your M-Pesa phone number")
+        return
+      }
+
+      console.log("All validations passed, proceeding with booking...");
       setBooking(true)
 
       const bookingData = {
         eventDetailId: selectedDateTime,
         ticketTypes: ticketCounts,
-        amount: calculateTotal()
+        amount: calculateTotal(),
+        phoneNumber: paymentMode === 'now' ? phoneNumber : null,
+        autoPayment: paymentMode === 'now'
       }
 
-      console.log("Booking data:", bookingData)
+      // FORCE M-Pesa endpoint for testing
+      const endpoint = '/api/mpesa/book-with-payment'
+      
+      console.log("Making API call to:", endpoint);
+      console.log("Axios base URL:", axios.defaults.baseURL);
+      console.log("Full URL will be:", (axios.defaults.baseURL || window.location.origin) + endpoint);
+      console.log("Booking data:", JSON.stringify(bookingData, null, 2));
 
-      const { data } = await axios.post('/api/booking/book-event', bookingData, {
-        headers: { Authorization: `Bearer ${await getToken()}` }
-      })
+      // Get the auth token
+      const token = await getToken();
+      console.log("Auth token obtained:", token ? "Yes" : "No");
+
+      console.log("Sending request...");
+      
+      const response = await axios.post(endpoint, bookingData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log("Response received:");
+      console.log("Status:", response.status);
+      console.log("Headers:", response.headers);
+      console.log("Data:", JSON.stringify(response.data, null, 2));
+
+      const data = response.data;
 
       if (data.success) {
-        toast.success("Booking successful! Redirecting to your bookings...")
+        console.log("Booking successful!");
+        
+        if (data.booking.payment?.paymentInitiated) {
+          console.log("M-Pesa payment initiated successfully!");
+          toast.success("Booking created! Check your phone for M-Pesa payment prompt.")
+          pollPaymentStatus(data.booking.id)
+        } else {
+          console.log("Payment not initiated, reason:", data.booking.payment?.message);
+          toast.success("Booking successful!")
+          setTimeout(() => {
+            navigate('/my-bookings')
+          }, 1500)
+        }
         
         // Clear the form
         setTicketCounts({ advance: 0, vip: 0, student: 0 })
-        
-        // Navigate to bookings page after a short delay
-        setTimeout(() => {
-          navigate('/my-bookings')
-        }, 1500)
+        setPhoneNumber('')
       } else {
+        console.error("Booking failed:", data.message);
         toast.error(data.message || "Booking failed")
       }
 
     } catch (error) {
-      console.error("Booking error:", error)
+      console.error("BOOKING ERROR:");
+      console.error("Error message:", error.message);
+      console.error("Error status:", error.response?.status);
+      console.error("Error data:", error.response?.data);
+      console.error("Error headers:", error.response?.headers);
+      console.error("Full error object:", error);
+      
+      // Check if it's a redirect response
+      if (error.response?.status === 302 || error.response?.status === 301) {
+        console.log("Received redirect response!");
+        console.log("Redirect location:", error.response.headers?.location);
+      }
+      
+      // Check if it's a 404 (endpoint not found)
+      if (error.response?.status === 404) {
+        console.log("Endpoint not found - check your routes!");
+      }
+      
       toast.error("Booking failed. Please try again.")
     }
     setBooking(false)
+  }
+
+  // Poll payment status after M-Pesa STK push
+  const pollPaymentStatus = (bookingId) => {
+    console.log("Starting payment status polling for booking:", bookingId);
+    
+    const checkStatus = async () => {
+      try {
+        const { data } = await axios.get(`/api/mpesa/payment-status/${bookingId}`, {
+          headers: { Authorization: `Bearer ${await getToken()}` }
+        })
+        
+        console.log("Payment status check result:", data);
+        
+        if (data.success) {
+          if (data.payment.isPaid) {
+            console.log("Payment confirmed successful!");
+            toast.success("Payment successful! Redirecting to your bookings...")
+            setTimeout(() => navigate('/my-bookings'), 2000)
+            return true // Stop polling
+          } else if (data.payment.paymentError) {
+            console.log("Payment failed:", data.payment.paymentError);
+            toast.error(`Payment failed: ${data.payment.paymentError}`)
+            return true // Stop polling
+          }
+        }
+        return false // Continue polling
+      } catch (error) {
+        console.error("Payment status check error:", error)
+        return true // Stop polling on error
+      }
+    }
+
+    // Poll every 3 seconds for 2 minutes max
+    let attempts = 0
+    const maxAttempts = 40
+    
+    const pollInterval = setInterval(async () => {
+      attempts++
+      console.log(`Payment status check attempt ${attempts}/${maxAttempts}`);
+      
+      const shouldStop = await checkStatus()
+      
+      if (shouldStop || attempts >= maxAttempts) {
+        clearInterval(pollInterval)
+        if (attempts >= maxAttempts) {
+          console.log("Payment polling timeout reached");
+          toast("Payment taking longer than expected. Check your bookings page for updates.", {
+            duration: 5000
+          })
+        }
+      }
+    }, 3000)
   }
 
   useEffect(() => {
@@ -170,7 +292,6 @@ const EventCheckout = () => {
               {event.event.description}
             </p>
             
-            {/* Show selected event details */}
             {selectedShow && (
               <div className='mt-4 p-3 bg-primary/10 border border-primary/20 rounded-lg'>
                 <p className='text-sm font-medium'>Selected Show:</p>
@@ -290,6 +411,80 @@ const EventCheckout = () => {
                   </div>
                 </div>
 
+                {/* Payment Options */}
+                <div className='mt-6'>
+                  <h3 className='font-medium mb-3'>Payment Options</h3>
+                  <div className='space-y-3'>
+                    <label className='flex items-center gap-3 p-3 border border-primary/20 rounded-lg cursor-pointer hover:bg-primary/5'>
+                      <input
+                        type="radio"
+                        name="paymentMode"
+                        value="now"
+                        checked={paymentMode === 'now'}
+                        onChange={(e) => {
+                          console.log("Payment mode changed to:", e.target.value);
+                          setPaymentMode(e.target.value);
+                        }}
+                        className='text-primary'
+                      />
+                      <div className='flex items-center gap-2'>
+                        <Phone className='w-4 h-4' />
+                        <span>Pay Now with M-Pesa</span>
+                      </div>
+                    </label>
+                    
+                    <label className='flex items-center gap-3 p-3 border border-primary/20 rounded-lg cursor-pointer hover:bg-primary/5'>
+                      <input
+                        type="radio"
+                        name="paymentMode"
+                        value="later"
+                        checked={paymentMode === 'later'}
+                        onChange={(e) => {
+                          console.log("Payment mode changed to:", e.target.value);
+                          setPaymentMode(e.target.value);
+                        }}
+                        className='text-primary'
+                      />
+                      <div className='flex items-center gap-2'>
+                        <CreditCard className='w-4 h-4' />
+                        <span>Book Now, Pay Later</span>
+                      </div>
+                    </label>
+                  </div>
+
+                  {/* M-Pesa Phone Number Input */}
+                  {paymentMode === 'now' && (
+                    <div className='mt-4'>
+                      <label className='block text-sm font-medium mb-2'>M-Pesa Phone Number</label>
+                      <div className='relative'>
+                        <Phone className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+                        <input
+                          type="tel"
+                          value={phoneNumber}
+                          onChange={(e) => {
+                            console.log("Phone number changed to:", e.target.value);
+                            setPhoneNumber(e.target.value);
+                          }}
+                          placeholder="0712345678 or 254712345678"
+                          className='w-full pl-10 pr-4 py-3 bg-transparent border border-primary/20 rounded-lg focus:border-primary focus:outline-none'
+                        />
+                      </div>
+                      <p className='text-xs text-gray-400 mt-1'>
+                        Enter the number you want to pay from
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Debug Info Panel */}
+                <div className='mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg'>
+                  <p className='text-xs text-yellow-400 font-medium'>Debug Info:</p>
+                  <p className='text-xs text-yellow-400'>Payment Mode: {paymentMode}</p>
+                  <p className='text-xs text-yellow-400'>Phone: {phoneNumber || 'Not entered'}</p>
+                  <p className='text-xs text-yellow-400'>User: {user?.id || 'Not logged in'}</p>
+                  <p className='text-xs text-yellow-400'>Total: {currency}{calculateTotal()}</p>
+                </div>
+
                 {/* Booking Summary */}
                 <div className='mt-6 p-4 bg-primary/10 border border-primary/20 rounded-lg'>
                   <div className='space-y-2'>
@@ -323,7 +518,12 @@ const EventCheckout = () => {
 
                 {/* Book Button */}
                 <button
-                  onClick={handleBooking}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log("Pay Now button clicked! Payment mode:", paymentMode);
+                    handleBooking();
+                  }}
                   disabled={booking || getTotalTickets() === 0}
                   className='w-full mt-4 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed transition rounded-lg font-medium text-white'
                 >
@@ -334,11 +534,15 @@ const EventCheckout = () => {
                     </>
                   ) : (
                     <>
-                      <CreditCard className='w-5 h-5' />
-                      Book {getTotalTickets()} Ticket{getTotalTickets() !== 1 ? 's' : ''} - {currency}{calculateTotal()}
+                      <Phone className='w-5 h-5' />
+                      Test M-Pesa Payment - {currency}{calculateTotal()}
                     </>
                   )}
                 </button>
+
+                <p className='text-xs text-gray-400 mt-2 text-center'>
+                  Testing M-Pesa integration - Check console for debug info
+                </p>
               </div>
             )}
           </div>
