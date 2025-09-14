@@ -12,6 +12,7 @@ const MyBookings = () => {
   
   const [bookings, setBookings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [cancellingBooking, setCancellingBooking] = useState(null) // Track which booking is being cancelled
 
   const getMyBookings = async () => {
     try {
@@ -32,18 +33,27 @@ const MyBookings = () => {
     setIsLoading(false)
   }
 
+  // Simple Pay Now handler that just shows info message
   const handlePayNow = (bookingId) => {
-    // Implement payment logic here
-    toast.success('Redirecting to payment...')
-    // You can redirect to payment page or open payment modal
-    console.log('Pay for booking:', bookingId)
+    toast('Cancel and create a new booking for payment.', {
+      duration: 5000,
+      icon: '💡'
+    })
+    console.log('Pay Now clicked for booking:', bookingId, '- Demo message shown')
   }
 
   const cancelBooking = async (bookingId) => {
+    setCancellingBooking(bookingId)
+    
     try {
-      const { data } = await axios.delete(`/api/bookings/cancel/${bookingId}`, {
+      console.log('Cancelling booking:', bookingId)
+      
+      // Use correct route path
+      const { data } = await axios.delete(`/api/booking/cancel/${bookingId}`, {
         headers: { Authorization: `Bearer ${await getToken()}` }
       })
+      
+      console.log('Cancel response:', data)
       
       if (data.success) {
         toast.success(data.message)
@@ -52,9 +62,12 @@ const MyBookings = () => {
         toast.error(data.message)
       }
     } catch (error) {
-      console.log('Error cancelling booking:', error)
-      toast.error('Failed to cancel booking')
+      console.error('Error cancelling booking:', error)
+      console.error('Error response:', error.response?.data)
+      toast.error(error.response?.data?.message || 'Failed to cancel booking')
     }
+    
+    setCancellingBooking(null)
   }
 
   useEffect(() => {
@@ -108,14 +121,35 @@ const MyBookings = () => {
                 <p className='text-gray-400 text-sm'>
                   Booking Date: {dateFormat(booking.bookingDate)}
                 </p>
-                <div className='mt-2'>
+                
+                {/* Enhanced status display */}
+                <div className='mt-2 flex flex-wrap gap-2'>
                   <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                    booking.status === 'Confirmed' 
+                    booking.isPaid
                       ? 'bg-green-100 text-green-800' 
-                      : 'bg-yellow-100 text-yellow-800'
+                      : booking.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-gray-100 text-gray-800'
                   }`}>
-                    {booking.status}
+                    {booking.isPaid ? 'Paid' : booking.status || 'Pending'}
                   </span>
+                  
+                  {booking.mpesaReceiptNumber && (
+                    <span className='inline-block px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800'>
+                      Receipt: {booking.mpesaReceiptNumber}
+                    </span>
+                  )}
+                </div>
+                
+                {/* Show ticket breakdown */}
+                <div className='mt-2 text-xs text-gray-400'>
+                  {booking.ticketTypes && (
+                    <div className='space-y-1'>
+                      {booking.ticketTypes.advance > 0 && <p>Advance: {booking.ticketTypes.advance}</p>}
+                      {booking.ticketTypes.vip > 0 && <p>VIP: {booking.ticketTypes.vip}</p>}
+                      {booking.ticketTypes.student > 0 && <p>Student: {booking.ticketTypes.student}</p>}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -123,6 +157,7 @@ const MyBookings = () => {
             <div className='flex flex-col md:items-end md:text-right justify-between p-4'>
               <div className='flex items-center gap-4'>
                 <p className='text-2xl font-semibold mb-3'>{currency}{booking.amount}</p>
+                {/* PRESENTATION-SAFE: Keep Pay Now button but with demo behavior */}
                 {!booking.isPaid && (
                   <button 
                     onClick={() => handlePayNow(booking._id)}
@@ -135,28 +170,47 @@ const MyBookings = () => {
               
               <div className='text-sm space-y-1'>
                 <p><span className='text-gray-400'>Total Tickets:</span> {booking.ticketCount}</p>
-                <p><span className='text-gray-400'>Ticket Numbers:</span> {booking.ticketNumbers.join(', ')}</p>
+                {booking.ticketNumbers && booking.ticketNumbers.length > 0 && (
+                  <p><span className='text-gray-400'>Ticket Numbers:</span> {booking.ticketNumbers.join(', ')}</p>
+                )}
                 {booking.isPaid && (
-                  <p className='text-green-600 font-medium'>✓ Paid</p>
+                  <p className='text-green-600 font-medium'>✓ Payment Confirmed</p>
+                )}
+                {booking.paymentError && (
+                  <p className='text-red-500 text-xs'>Payment Error: {booking.paymentError}</p>
+                )}
+                {!booking.isPaid && (
+                  <p className='text-orange-500 text-xs'>Note: For payment demo, create new booking</p>
                 )}
               </div>
               
-              {!booking.isPaid && booking.status !== 'Cancelled' && (
+              {/* Keep cancellation working since it's functional */}
+              {!booking.isPaid && booking.status !== 'cancelled' && (
                 <button
                   onClick={() => {
                     if (window.confirm('Are you sure you want to cancel this booking?')) {
                       cancelBooking(booking._id)
                     }
                   }}
-                  className='mt-2 text-red-500 hover:text-red-700 text-sm underline'
+                  disabled={cancellingBooking === booking._id}
+                  className='mt-2 text-red-500 hover:text-red-700 disabled:opacity-50 text-sm underline flex items-center gap-1'
                 >
-                  Cancel Booking
+                  {cancellingBooking === booking._id ? (
+                    <>
+                      <LoaderIcon className='w-3 h-3 animate-spin' />
+                      Cancelling...
+                    </>
+                  ) : (
+                    'Cancel Booking'
+                  )}
                 </button>
               )}
             </div>
           </div>
         ))
       )}
+      
+      
     </div>
   )
 }
