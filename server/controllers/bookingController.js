@@ -5,7 +5,7 @@ import EventDetails from '../models/EventDetails.js';
 // Updated booking creation for EventDetails system
 export const createEventBooking = async (req, res) => {
   try {
-    const userId = req.auth().userId;
+    const userId = req.auth.userId; // Fixed: Use req.auth.userId for Clerk
     const { eventDetailId, ticketTypes, amount } = req.body;
 
     console.log("📝 Booking request:", { eventDetailId, ticketTypes, amount, userId });
@@ -99,7 +99,7 @@ export const createEventBooking = async (req, res) => {
 // Updated function to get user's bookings
 export const getUserBookings = async (req, res) => {
   try {
-    const userId = req.auth().userId;
+    const userId = req.auth.userId; // Fixed: Use req.auth.userId for Clerk
     
     console.log("📊 Fetching bookings for user:", userId);
     
@@ -151,7 +151,12 @@ export const getUserBookings = async (req, res) => {
         amount: booking.amount,
         isPaid: booking.isPaid,
         bookingDate: booking.createdAt,
-        status: booking.isPaid ? 'Confirmed' : 'Pending Payment'
+        status: booking.isPaid ? 'Confirmed' : 'Pending Payment',
+        // M-Pesa payment information
+        paymentDetails: booking.paymentDetails || null,
+        paymentError: booking.paymentError || null,
+        canPay: !booking.isPaid && booking.status !== 'cancelled',
+        mpesaReceiptNumber: booking.paymentDetails?.mpesaReceiptNumber || null
       };
     });
 
@@ -204,10 +209,14 @@ export const getBookedTickets = async (req, res) => {
   }
 };
 
+// FIXED cancelBooking function to work with Clerk auth
 export const cancelBooking = async (req, res) => {
   try {
-    const userId = req.auth().userId;
+    // FIXED: Use req.auth.userId (Clerk format) instead of req.auth().userId
+    const userId = req.auth.userId;
     const { bookingId } = req.params;
+
+    console.log('Cancel booking request:', { userId, bookingId }); // Debug log
 
     const booking = await Booking.findOne({ _id: bookingId, user: userId })
       .populate({
@@ -219,6 +228,7 @@ export const cancelBooking = async (req, res) => {
       });
 
     if (!booking) {
+      console.log('Booking not found or unauthorized for user:', userId); // Debug log
       return res.json({success: false, message: "Booking not found or unauthorized."});
     }
 
@@ -230,6 +240,7 @@ export const cancelBooking = async (req, res) => {
     const hoursDifference = timeDifference / (1000 * 3600);
 
     if (hoursDifference < 24) {
+      console.log('Cancellation not allowed - less than 24 hours:', hoursDifference); // Debug log
       return res.json({
         success: false, 
         message: "Cancellation not allowed. Event starts in less than 24 hours."
@@ -239,12 +250,15 @@ export const cancelBooking = async (req, res) => {
     // Delete the booking
     await Booking.findByIdAndDelete(bookingId);
 
+    console.log('Booking cancelled successfully:', bookingId); // Debug log
+
     res.json({
       success: true,
       message: "Booking cancelled successfully. Refund will be processed within 5-7 business days."
     });
   } catch (error) {
-    console.log(error.message);
+    console.error('Cancel booking error:', error.message);
+    console.error('Error stack:', error.stack); // More detailed error logging
     res.json({success: false, message: "Failed to cancel booking."});
   }
 };
