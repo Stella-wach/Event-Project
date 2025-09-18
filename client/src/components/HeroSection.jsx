@@ -9,7 +9,7 @@ const HeroSection = () => {
   return (
 <div className="relative flex flex-col items-start justify-center gap-4 px-6 md:px-16 lg:px-36 bg-[url('/backgroundEvents.jpg')] bg-cover bg-center h-screen">
       
-      {/* Dim overlay */}
+      
       <div className="absolute inset-0 bg-black/50"></div>
 
       {/* Content */}

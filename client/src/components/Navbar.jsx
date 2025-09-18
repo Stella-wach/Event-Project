@@ -8,7 +8,7 @@ import { useAppContext } from '../context/appContext'
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useUser();
-  const { openSignIn } = useClerk(); // ✅ fixed name
+  const { openSignIn } = useClerk(); 
 
   const navigate = useNavigate();
 
