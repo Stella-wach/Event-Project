@@ -9,29 +9,27 @@ const HeroSection = () => {
   return (
 <div className="relative flex flex-col items-start justify-center gap-4 px-6 md:px-16 lg:px-36 bg-[url('/backgroundEvents.jpg')] bg-cover bg-center h-screen">
       
-      
       <div className="absolute inset-0 bg-black/50"></div>
 
       {/* Content */}
-      <img src={assets.eventLogo} alt="" className='max-h-11 lg:h-11 mt-20 relative z-10' />
+      {/* ✅ Changed from max-h-11 to max-h-8 (32px) - much smaller */}
+      <img src={assets.eventLogo} alt="" className='max-h-8 lg:max-h-8 mt-20 relative z-10' />
 
-      <h1 className="text-5xl md:text-[70px] md:leading-18 font-semibold max-w-110 relative z-10">
+      <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold max-w-110 relative z-10 leading-tight">
         Moonlight <br /> Sparks The Crowd
       </h1>
 
       <div className="flex items-center gap-4 text-gray-300 relative z-10">
-        <span>Action | Music | Entertainment</span>
-
+        <span>Action | Music | Entertainment</span> 
         <div className="flex items-center gap-1">
           <CalendarIcon className="w-4.5 h-4.5" /> 2025
-        </div>
-        
+        </div>         
         <div className="flex items-center gap-1">
           <ClockIcon className="w-4.5 h-4.5" /> 2h 8m
         </div>
       </div>
 
-      <p className="max-w-xl text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed mb-8 relative z-10">
+      <p className="max-w-xl text-gray-300 text-sm md:text-base leading-relaxed mb-6 relative z-10">
         A world of endless stages, dazzling lights, and roaring crowds—your adventure begins with one click.
       </p>
 

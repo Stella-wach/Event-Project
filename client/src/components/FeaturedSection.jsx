@@ -6,35 +6,35 @@ import EventCard from './EventCard'
 import { useAppContext } from '../context/appContext'
 
 const FeaturedSection = () => {
-
     const navigate = useNavigate()
     const { events} = useAppContext()
 
   return (
-    <div className='px-6 md:px-16 lg:px24 xl:px-44 overflow-hidden'>
+    <div className='px-6 md:px-16 lg:px-24 xl:px-44 overflow-hidden'>
 
-
-     <div className='relative flex items-center justify-between pt-20 pb-10'>
-
+     <div className='relative flex items-center justify-between pt-16 pb-6'>
         <BlurCircle top='0' right='-80px'/>
-        <p className='text-gray-300 font-medium text-lg'>Upcoming Events</p>
+        {/* ✅ Reduced heading size */}
+        <p className='text-gray-300 font-medium text-base'>Upcoming Events</p>
 
-        <button onClick={()=> navigate('/events')  }   className='group flex items-center gap-2 text-sm text-gray-300 cursor-pointer'>
+        <button onClick={()=> navigate('/events')}   className='group flex items-center gap-1.5 text-xs text-gray-300 cursor-pointer'>
             View All 
-            <ArrowRight className='group-hover:translate-x-0.5 transition w-4.5 h-4.5'/> 
+            <ArrowRight className='group-hover:translate-x-0.5 transition w-3.5 h-3.5'/> 
         </button>
-        </div> 
+     </div> 
 
-     <div className='flex flex-wrap max-sm:justify-center gap-8 mt-8'>
+     {/* ✅ Changed to proper 4-column grid layout */}
+     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6'>
        {events.slice(0, 4).map((event) => (
          <EventCard key={event._id} event={event} />
        ))}
-        </div> 
+     </div> 
 
-     <div className='flex justify-center mt-20'>
+     {/* ✅ Made button smaller */}
+     <div className='flex justify-center mt-12'>
         <button onClick={() => { navigate('/events'); scrollTo(0, 0); }}
-        className='px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-md font-medium cursor-pointer'>ShowMore</button>
-        </div> 
+        className='px-8 py-2 text-xs bg-primary hover:bg-primary-dull transition rounded-md font-medium cursor-pointer'>Show More</button>
+     </div> 
     </div>
   )
 }

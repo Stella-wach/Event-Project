@@ -8,17 +8,17 @@ import { useAppContext } from '../context/appContext'
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useUser();
-  const { openSignIn } = useClerk(); 
-
+  const { openSignIn } = useClerk();
+  
   const navigate = useNavigate();
-
-
+  
   const {favoriteEvents} = useAppContext()
 
   return (
     <div className='fixed top-0 left-0 z-50 w-full flex items-center justify-between px-6 md:px-16 lg:px-36 py-5'>
       <Link to='/' className='max-md:flex-1'>
-        <img src={assets.logo} alt="" className='w-36 h-auto' />
+        {/* ✅ Changed from w-36 to w-24 (96px) - much smaller */}
+        <img src={assets.logo} alt="" className='w-24 h-auto' />
       </Link>
 
       <div
@@ -30,14 +30,13 @@ const Navbar = () => {
             onClick={() => setIsOpen(false)}
           />
         )}
-
+        
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/'>Home</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/events'>Events</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/'>Venues</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/'>Categories</Link>
-{ favoriteEvents.length > 0 &&  <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/favorite'>Favorites</Link>} 
-     
-</div>
+{ favoriteEvents.length > 0 &&  <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/favorite'>Favorites</Link>}
+      </div>
 
       <div className='flex items-center gap-8'>
         <SearchIcon className='max-md:hidden w-6 cursor-pointer' />
@@ -48,8 +47,7 @@ const Navbar = () => {
                 <UserButton.MenuItems>
                   <UserButton.Action label='My Bookings' labelIcon={<TicketPlus width={15} />} onClick={() => navigate('/my-bookings')} />
                   </UserButton.MenuItems>
-
-            </UserButton>)
+             </UserButton>)
         }
       </div>
 
