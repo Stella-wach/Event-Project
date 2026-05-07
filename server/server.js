@@ -19,10 +19,20 @@ await connectDB();
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: [
-    "http://localhost:5173",                  // local dev
-    process.env.CLIENT_URL,                   // ✅ Fix 2: your Vercel URL from .env
-  ],
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      process.env.CLIENT_URL,
+    ].filter(Boolean);
+
+    const isVercelPreview = origin && origin.endsWith(".vercel.app");
+
+    if (!origin || allowedOrigins.includes(origin) || isVercelPreview) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked: ${origin}`));
+    }
+  },
   credentials: true
 }));
 app.use(clerkMiddleware());
