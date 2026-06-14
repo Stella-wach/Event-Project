@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 
 //STORE MY GLOBAL STATES AND FUNCTIONS
+// eslint-disable-next-line react-refresh/only-export-components
 export const AppContext = createContext()
 
 export const AppProvider = ({ children })=>{
@@ -27,6 +28,7 @@ export const AppProvider = ({ children })=>{
 
             if(!data.isAdmin && location.pathname.startsWith('/admin')){
                 navigate('/')
+                // eslint-disable-next-line no-undef
                 toast.error('You are not authorized to access admin dashboard')
             }
         }catch (error){
@@ -42,6 +44,7 @@ export const AppProvider = ({ children })=>{
             if(data.success){
                 setEvents(data.events)
             } else{
+                // eslint-disable-next-line no-undef
                 toast.error(data.message)
             }
         } catch(error){
@@ -56,6 +59,7 @@ export const AppProvider = ({ children })=>{
             if(data.success){
                 setFavoriteEvents(data.events)
             }else{
+                // eslint-disable-next-line no-undef
                 toast.error(data.message)
             }
          }catch (error){
@@ -86,4 +90,5 @@ export const AppProvider = ({ children })=>{
     )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAppContext = () => useContext(AppContext)
