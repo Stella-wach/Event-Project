@@ -12,6 +12,7 @@ const MyBookings = () => {
   const [bookings, setBookings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [cancellingBooking, setCancellingBooking] = useState(null)
+  const [payingBooking, setPayingBooking] = useState(null)
 
   const getMyBookings = useCallback(async () => {
     try {
@@ -30,11 +31,76 @@ const MyBookings = () => {
     setIsLoading(false)
   }, [axios, getToken])
 
-  const handlePayNow = () => {
-    toast('Cancel and create a new booking for payment.', {
-      duration: 5000,
-      icon: '💡'
-    })
+  // FIXED: was a no-op placeholder that always showed the same static toast
+  // regardless of which booking was clicked. Now actually triggers STK Push.
+  const handlePayNow = async (bookingId) => {
+    const phoneNumber = window.prompt(
+      'Enter your M-Pesa phone number (e.g. 0712345678 or 254712345678):'
+    )
+
+    if (!phoneNumber) return // user cancelled the prompt
+
+    setPayingBooking(bookingId)
+
+    try {
+      const { data } = await axios.post(
+        '/api/mpesa/stk-push',
+        { bookingId, phoneNumber },
+        { headers: { Authorization: `Bearer ${await getToken()}` } }
+      )
+
+      if (data.success) {
+        toast.success(data.message || 'Check your phone for the M-Pesa prompt')
+        pollPaymentStatus(bookingId)
+      } else {
+        toast.error(data.message || 'Failed to initiate payment')
+        setPayingBooking(null)
+      }
+    } catch (error) {
+      console.log('Pay Now error:', error)
+      toast.error(error.response?.data?.message || 'Payment initiation failed')
+      setPayingBooking(null)
+    }
+  }
+
+  // Polls payment status after STK Push is triggered, same pattern as EventCheckout
+  const pollPaymentStatus = (bookingId) => {
+    const checkStatus = async () => {
+      try {
+        const { data } = await axios.get(`/api/mpesa/payment-status/${bookingId}`, {
+          headers: { Authorization: `Bearer ${await getToken()}` }
+        })
+        if (data.success) {
+          if (data.payment.isPaid) {
+            toast.success('Payment successful!')
+            getMyBookings() // refresh the list to show updated status
+            return true
+          } else if (data.payment.paymentError) {
+            toast.error(`Payment failed: ${data.payment.paymentError}`)
+            return true
+          }
+        }
+        return false
+      } catch {
+        return true
+      }
+    }
+
+    let attempts = 0
+    const maxAttempts = 40 // ~2 minutes at 3s intervals
+    const pollInterval = setInterval(async () => {
+      attempts++
+      const shouldStop = await checkStatus()
+      if (shouldStop || attempts >= maxAttempts) {
+        clearInterval(pollInterval)
+        setPayingBooking(null)
+        if (attempts >= maxAttempts) {
+          toast('Payment taking longer than expected. Refresh to check status.', {
+            duration: 5000
+          })
+        }
+      }
+    }, 3000)
   }
 
   const cancelBooking = async (bookingId) => {
@@ -57,7 +123,7 @@ const MyBookings = () => {
 
   useEffect(() => {
     if (user) getMyBookings()
-  }, [user])
+  }, [getMyBookings, user])
 
   if (isLoading) {
     return (
@@ -137,9 +203,17 @@ const MyBookings = () => {
                   {!booking.isPaid && (
                     <button
                       onClick={() => handlePayNow(booking._id)}
-                      className='bg-primary hover:bg-primary-dull px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer transition-colors'
+                      disabled={payingBooking === booking._id}
+                      className='bg-primary hover:bg-primary-dull px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer transition-colors disabled:opacity-50'
                     >
-                      Pay Now
+                      {payingBooking === booking._id ? (
+                        <span className='flex items-center gap-1'>
+                          <LoaderIcon className='w-3 h-3 animate-spin' />
+                          Processing...
+                        </span>
+                      ) : (
+                        'Pay Now'
+                      )}
                     </button>
                   )}
                 </div>
@@ -152,9 +226,6 @@ const MyBookings = () => {
                   {booking.isPaid && <p className='text-green-600 font-medium'>✓ Payment Confirmed</p>}
                   {booking.paymentError && (
                     <p className='text-red-500 text-xs'>Payment Error: {booking.paymentError}</p>
-                  )}
-                  {!booking.isPaid && (
-                    <p className='text-orange-500 text-xs'>Note: For payment demo, create new booking</p>
                   )}
                 </div>
 

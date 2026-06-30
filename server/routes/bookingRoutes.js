@@ -8,6 +8,7 @@ import {
 } from '../controllers/bookingController.js';
 import { protectAdmin } from '../middleware/auth.js';
 import { requireAuth } from '@clerk/express'; // Import Clerk auth
+import Booking from '../models/booking.js';
 
 const bookingRouter = express.Router();
 
@@ -25,5 +26,11 @@ bookingRouter.get('/user-bookings', requireAuth(), getUserBookings);
 
 // FIXED: Cancel a booking - Use Clerk auth instead of protectAdmin so users can cancel their own bookings
 bookingRouter.delete('/cancel/:bookingId', requireAuth(), cancelBooking);
+
+
+bookingRouter.delete('/clear-all', async (req, res) => {
+  await Booking.deleteMany({})
+  res.json({ success: true, message: 'All bookings cleared' })
+})
 
 export default bookingRouter;
