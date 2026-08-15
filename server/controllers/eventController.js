@@ -214,10 +214,12 @@ export const getEvent = async (req, res) => {
       return res.status(404).json({ success: false, message: "Event not found" });
     }
 
+    // No date filter here either - matches getEvents. Showtimes stay
+    // selectable at checkout even after their date has passed, since
+    // events are meant to stay visible/bookable permanently.
     const eventDetailsData = await EventDetails.find({
       eventId: new mongoose.Types.ObjectId(eventId),
-      eventDateTime: { $gte: new Date() },
-    }).sort({ eventDateTime: 1 });
+    }).sort({ eventDateTime: -1 });
 
     // Group showtimes by date
     const dateTime = {};
@@ -245,11 +247,11 @@ export const getEvent = async (req, res) => {
 // ========================
 export const getActiveEventDetails = async (req, res) => {
   try {
-    const eventDetails = await EventDetails.find({
-      eventDateTime: { $gte: new Date() }, // Only future events
-    })
+    // No date filter here either - admin should see every event added,
+    // past or future, so they can manage/delete any of them.
+    const eventDetails = await EventDetails.find({})
       .populate("eventId") // Populate with full event data
-      .sort({ eventDateTime: 1 }); // Sort by date ascending
+      .sort({ eventDateTime: -1 }); // Newest first
 
     console.log("📊 Found active event details:", eventDetails.length); // DEBUG LOG
 
