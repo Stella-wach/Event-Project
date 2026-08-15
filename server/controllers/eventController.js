@@ -168,11 +168,12 @@ export const addEvent = async (req, res) => {
 // ========================
 export const getEvents = async (req, res) => {
   try {
-    const events = await EventDetails.find({
-      eventDateTime: { $gte: new Date() },
-    })
+    // No date filter here - events stay listed permanently once added,
+    // rather than disappearing once their eventDateTime passes.
+    // Newest first, so recent/upcoming events show before older ones.
+    const events = await EventDetails.find({})
       .populate("eventId")
-      .sort({ eventDateTime: 1 });
+      .sort({ eventDateTime: -1 });
 
     // Filter unique events by ID
     const uniqueEvents = [];
