@@ -67,6 +67,7 @@ export const protectAdmin = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("❌ Admin check failed:", error.message);
+    console.error(error.stack);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
