@@ -12,7 +12,7 @@ import userRouter from './routes/userRoutes.js';
 import mpesaRouter from './routes/mpesaRoutes.js';
 
 const app = express();
-const port = process.env.PORT || 3000; // ✅ Fix 1: use Render's PORT
+const port = process.env.PORT || 3000;
 
 await connectDB();
 
@@ -46,6 +46,10 @@ app.use('/api/admin', adminRouter);
 app.use('/api/user', userRouter);
 app.use('/api/mpesa', mpesaRouter);
 
+// Health check for uptime pinger
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: Date.now() });
+});
 
 app.listen(port, () =>
   console.log(`Server is running at http://localhost:${port}`)

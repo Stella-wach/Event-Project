@@ -4,6 +4,7 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
+axios.defaults.timeout = 60000 // 60s — Render cold start can take 30-50s
 
 //STORE MY GLOBAL STATES AND FUNCTIONS
 // eslint-disable-next-line react-refresh/only-export-components
@@ -14,6 +15,8 @@ export const AppProvider = ({ children })=>{
     const [isAdmin, setIsAdmin] = useState(false)
     const [events, setEvents] = useState([])
     const [favoriteEvents, setFavoriteEvents] = useState([])
+    const [isEventsLoading, setIsEventsLoading] = useState(true)
+    const [eventsError, setEventsError] = useState(false)
     const navigate = useNavigate()
 
     const { user } = useUser()
@@ -36,19 +39,30 @@ export const AppProvider = ({ children })=>{
         }
     }
 
-    const fetchEvents = async ()=> {
+    const fetchEvents = async (isRetry = false)=> {
         try{
+            setIsEventsLoading(true)
+            setEventsError(false)
             const {data} = await axios.get('/api/event/all', {
-                headers: { Authorization: `Bearer ${await getToken()}` }   // ✅ added auth header
+                headers: { Authorization: `Bearer ${await getToken()}` }
             })
             if(data.success){
                 setEvents(data.events)
+                setIsEventsLoading(false)
             } else{
                 // eslint-disable-next-line no-undef
                 toast.error(data.message)
+                setIsEventsLoading(false)
             }
         } catch(error){
             console.error(error)
+            if(!isRetry){
+                // Likely a Render cold start timeout — retry once after a short delay
+                setTimeout(() => fetchEvents(true), 2000)
+            } else {
+                setIsEventsLoading(false)
+                setEventsError(true)
+            }
         }
     }
 
@@ -76,11 +90,12 @@ export const AppProvider = ({ children })=>{
             fetchIsAdmin()
             fetchFavoriteEvents()
         }
-    },[])
+    },[user])
 
     const value ={
         axios,
-        fetchIsAdmin,user,getToken,navigate,isAdmin,events,favoriteEvents,fetchFavoriteEvents
+        fetchIsAdmin,user,getToken,navigate,isAdmin,events,favoriteEvents,fetchFavoriteEvents,
+        isEventsLoading, eventsError, fetchEvents
     }
 
     return (

@@ -5,7 +5,34 @@ import { useAppContext } from '../context/appContext'
 import PageTransition from '../components/PageTransition'
 
 const Events = () => {
-  const { events } = useAppContext()
+  const { events, isEventsLoading, eventsError, fetchEvents } = useAppContext()
+
+  if (isEventsLoading) {
+    return (
+      <PageTransition>
+        <div className='flex flex-col items-center justify-center h-screen'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4'></div>
+          <p className='text-lg'>Waking up the server, this can take up to a minute...</p>
+        </div>
+      </PageTransition>
+    )
+  }
+
+  if (eventsError) {
+    return (
+      <PageTransition>
+        <div className='flex flex-col items-center justify-center h-screen'>
+          <h1 className='text-2xl font-bold text-center mb-4'>Couldn&apos;t load events</h1>
+          <button
+            onClick={() => fetchEvents()}
+            className='px-6 py-2 bg-primary rounded-full hover:bg-primary/90 transition'
+          >
+            Try again
+          </button>
+        </div>
+      </PageTransition>
+    )
+  }
 
   return events.length > 0 ? (
     <PageTransition>
