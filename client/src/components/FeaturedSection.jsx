@@ -6,12 +6,12 @@ import BlurCircle from './BlurCircle'
 import EventCard from './EventCard'
 import { useAppContext } from '../context/appContext'
 
-const fadeInLeft = {
-  hidden: { opacity: 0, x: -60 },
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40 },
   visible: (delay = 0) => ({
     opacity: 1,
-    x: 0,
-    transition: { duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] }
+    y: 0,
+    transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }
   })
 }
 
@@ -24,7 +24,7 @@ const FeaturedSection = () => {
 
      <motion.div
         className='relative flex items-center justify-between pt-16 pb-6'
-        variants={fadeInLeft}
+        variants={fadeInUp}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.4 }}
@@ -45,7 +45,7 @@ const FeaturedSection = () => {
        {events.slice(0, 4).map((event, index) => (
          <motion.div
            key={event._id}
-           variants={fadeInLeft}
+           variants={fadeInUp}
            initial="hidden"
            whileInView="visible"
            viewport={{ once: true, amount: 0.3 }}
@@ -59,7 +59,7 @@ const FeaturedSection = () => {
      {/* ✅ Made button smaller */}
      <motion.div
         className='flex justify-center mt-12'
-        variants={fadeInLeft}
+        variants={fadeInUp}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.4 }}

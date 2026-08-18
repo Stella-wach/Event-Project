@@ -5,12 +5,12 @@ import ReactPlayer from 'react-player';
 import BlurCircle from './BlurCircle.jsx';
 import { PlayCircle } from 'lucide-react';
 
-const fadeInLeft = {
-  hidden: { opacity: 0, x: -60 },
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40 },
   visible: (delay = 0) => ({
     opacity: 1,
-    x: 0,
-    transition: { duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] }
+    y: 0,
+    transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }
   })
 }
 
@@ -25,7 +25,7 @@ const EventPreview = () => {
         {/* ✅ Reduced heading size */}
         <motion.p
           className='text-gray-300 font-medium text-base max-w-[960px] mx-auto'
-          variants={fadeInLeft}
+          variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.5 }}
@@ -36,7 +36,7 @@ const EventPreview = () => {
 
         <motion.div
           className='relative mt-4'
-          variants={fadeInLeft}
+          variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
@@ -60,7 +60,7 @@ const EventPreview = () => {
       {/* ✅ Made thumbnail grid smaller and more compact */}
       <motion.div
         className='group grid grid-cols-4 gap-3 md:gap-6 mt-6 max-w-2xl mx-auto px-6'
-        variants={fadeInLeft}
+        variants={fadeInUp}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
