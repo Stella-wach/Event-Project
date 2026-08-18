@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import fallbackEvents from "../data/fallbackEvents";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 axios.defaults.timeout = 60000 // 60s — Render cold start can take 30-50s
@@ -14,9 +15,9 @@ export const AppContext = createContext()
 export const AppProvider = ({ children })=>{
 
     const [isAdmin, setIsAdmin] = useState(false)
-    const [events, setEvents] = useState([])
+    const [events, setEvents] = useState(fallbackEvents)
     const [favoriteEvents, setFavoriteEvents] = useState([])
-    const [isEventsLoading, setIsEventsLoading] = useState(true)
+    const [isEventsLoading, setIsEventsLoading] = useState(false)
     const [eventsError, setEventsError] = useState(false)
     const navigate = useNavigate()
 

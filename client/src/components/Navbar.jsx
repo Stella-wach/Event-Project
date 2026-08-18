@@ -36,10 +36,14 @@ const Navbar = () => {
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/'>Venues</Link>
         <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/'>Categories</Link>
 { favoriteEvents.length > 0 &&  <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/favorite'>Favorites</Link>}
+        <Link onClick={() => { scrollTo(0, 0); setIsOpen(false) }} to='/help'>Help</Link>
       </div>
 
       <div className='flex items-center gap-8'>
-        <SearchIcon className='max-md:hidden w-6 cursor-pointer' />
+        <SearchIcon
+          className='max-md:hidden w-6 cursor-pointer'
+          onClick={() => { navigate('/events'); scrollTo(0, 0) }}
+        />
         {
           !user
             ? (<button onClick={() => openSignIn()} className='px-4 py-1 sm:px-7 sm:py2 bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer'>Login</button>)

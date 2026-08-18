@@ -8,6 +8,7 @@ import EventDetails from './pages/EventDetails'
 import EventCheckout from './pages/EventCheckout'
 import MyBookings from './pages/MyBookings'
 import Favorite from './pages/Favorite'
+import HelpDesk from './pages/HelpDesk'
 import toast, { Toaster } from 'react-hot-toast'
 import Footer from './components/Footer'
 import AdminLayout from './pages/admin/AdminLayout'
@@ -37,6 +38,7 @@ const App = () => {
           <Route path='/event/:id/checkout' element={<EventCheckout />} />
           <Route path='/my-bookings' element={<MyBookings />} />
           <Route path='/favorite' element={<Favorite />} />
+          <Route path='/help' element={<HelpDesk />} />
 
           <Route
             path='/admin/*'
