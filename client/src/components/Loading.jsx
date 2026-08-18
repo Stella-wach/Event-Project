@@ -14,14 +14,14 @@ const Loading = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full py-10">
+    <div className="flex flex-col items-center justify-center min-h-[70vh] w-full py-10">
       <div className="flex items-center">
         <LoaderCircle className="animate-spin w-8 h-8 text-primary" />
         <span className="ml-2 text-gray-500">Loading...</span>
       </div>
       {showWakeMessage && (
         <p className="mt-3 text-sm text-gray-400 text-center max-w-xs">
-          Waking up the server — this can take up to a minute on the first load.
+          Waking up the server — please wait.
         </p>
       )}
     </div>

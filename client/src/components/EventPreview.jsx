@@ -1,8 +1,18 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import { dummyEventMedia } from '../assets/assets.js'
 import ReactPlayer from 'react-player';
 import BlurCircle from './BlurCircle.jsx';
 import { PlayCircle } from 'lucide-react';
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }
+  })
+}
 
 const EventPreview = () => {
   const [currentEvent, setCurrentEvent] = React.useState(dummyEventMedia[0]);
@@ -13,9 +23,25 @@ const EventPreview = () => {
     <div>
       <div className='px-6 md:px-16 lg:px-24 xl:px-44 py-16 overflow-hidden'>
         {/* ✅ Reduced heading size */}
-        <p className='text-gray-300 font-medium text-base max-w-[960px] mx-auto'>Event Preview</p>
+        <motion.p
+          className='text-gray-300 font-medium text-base max-w-[960px] mx-auto'
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          custom={0}
+        >
+          Event Preview
+        </motion.p>
 
-        <div className='relative mt-4'>
+        <motion.div
+          className='relative mt-4'
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          custom={0.15}
+        >
           <BlurCircle top='-100px' right='-100px' />
           <div className="relative w-full max-w-[640px] aspect-video mx-auto">
             <iframe
@@ -28,11 +54,18 @@ const EventPreview = () => {
               className="absolute top-0 left-0 w-full h-full"
             ></iframe>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* ✅ Made thumbnail grid smaller and more compact */}
-      <div className='group grid grid-cols-4 gap-3 md:gap-6 mt-6 max-w-2xl mx-auto px-6'>
+      <motion.div
+        className='group grid grid-cols-4 gap-3 md:gap-6 mt-6 max-w-2xl mx-auto px-6'
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        custom={0.3}
+      >
         {dummyEventMedia.map((event) => (
           <div 
             key={event.image} 
@@ -51,7 +84,7 @@ const EventPreview = () => {
             />
           </div>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }
