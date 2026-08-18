@@ -21,7 +21,7 @@ const Loading = () => {
       </div>
       {showWakeMessage && (
         <p className="mt-3 text-sm text-gray-400 text-center max-w-xs">
-          Waking up the server — this can take up to a minute on the first load.
+          Waking up the server — please wait.
         </p>
       )}
     </div>
